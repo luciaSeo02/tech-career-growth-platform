@@ -8,6 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { RegisterDto } from './dto/register.dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 
@@ -16,9 +17,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post('register')
-  async register(
-    @Body() body: { name: string; email: string; password: string },
-  ) {
+  async register(@Body() body: RegisterDto) {
     return this.usersService.createUser(body);
   }
 

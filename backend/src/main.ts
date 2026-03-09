@@ -8,7 +8,13 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3001;
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   app.enableCors();
 
