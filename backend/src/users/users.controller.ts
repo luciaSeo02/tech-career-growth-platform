@@ -11,29 +11,57 @@ import { UsersService } from './users.service';
 import { RegisterDto } from './dto/register.dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
+import { Patch, Delete } from '@nestjs/common';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post('register')
-  async register(@Body() body: RegisterDto) {
+  register(@Body() body: RegisterDto) {
     return this.usersService.createUser(body);
   }
 
-  @Get('profile')
   @UseGuards(AuthGuard('jwt'))
-  getProfile(@Req() req: Request & { user: { sub: string; email: string } }) {
-    return req.user;
+  @Get('me')
+  getMe(@Req() req: Request & { user: { sub: string } }) {
+    return this.usersService.getUserById(req.user.sub);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('me')
+  update(
+    @Req() req: Request & { user: { sub: string } },
+    @Body() dto: UpdateUserDto,
+  ) {
+    return this.usersService.updateUser(req.user.sub, dto);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('me')
+  delete(@Req() req: Request & { user: { sub: string } }) {
+    return this.usersService.deleteUser(req.user.sub);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll() {
+  findAll() {
     return this.usersService.getUsers();
   }
 
-  @Get(':email')
-  async findOne(@Param('email') email: string) {
-    return this.usersService.getUserByEmail(email);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.getUserById(id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('change-password')
+  changePassword(
+    @Req() req: Request & { user: { sub: string } },
+    @Body() dto: ChangePasswordDto,
+  ) {
+    return this.usersService.changePassword(req.user.sub, dto);
   }
 }
