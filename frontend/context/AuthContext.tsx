@@ -16,10 +16,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return localStorage.getItem("token");
   });
 
-  const login = (jwt: string) => {
-    localStorage.setItem("token", jwt);
-    document.cookie = `token=${jwt}; path=/; max-age=3600`;
-    setToken(jwt);
+  const login = (token: string) => {
+    localStorage.setItem("token", token);
+    document.cookie = `token=${token}; path=/; max-age=3600; SameSite=Lax`;
+    setToken(token);
   };
 
   const logout = () => {
