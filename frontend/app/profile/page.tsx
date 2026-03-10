@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { apiGet } from "../../utils/api";
 import { useAuth } from "../../hooks/useAuth";
+import { useMounted } from "../../hooks/useMounted";
 
 type JwtPayload = {
   sub: string;
@@ -12,7 +13,9 @@ type JwtPayload = {
 };
 
 export default function ProfilePage() {
+  const mounted = useMounted();
   const { token, logout } = useAuth();
+
   const [user, setUser] = useState<JwtPayload | null>(null);
   const [error, setError] = useState("");
 
@@ -25,12 +28,13 @@ export default function ProfilePage() {
         setUser(data);
       } catch (err: unknown) {
         if (err instanceof Error) setError(err.message);
-        else setError("Unknown error");
       }
     };
 
     void fetchProfile();
   }, [token]);
+
+  if (!mounted) return null;
 
   if (!token) return <p>Please login</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
