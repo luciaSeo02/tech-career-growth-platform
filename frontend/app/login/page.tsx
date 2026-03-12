@@ -19,6 +19,8 @@ function LoginPageContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const verified = searchParams.get("verified");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -48,6 +50,12 @@ function LoginPageContent() {
       )}
 
       {error && <p style={{ color: "red", marginBottom: 16 }}>{error}</p>}
+
+      {verified === "true" && (
+        <p style={{ color: "green", marginBottom: 16 }}>
+          Your email has been successfully verified! Please log in.
+        </p>
+      )}
 
       <form onSubmit={handleSubmit}>
         <FormInput

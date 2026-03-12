@@ -9,27 +9,44 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import * as crypto from 'crypto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
 
   async createUser(data: RegisterDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     try {
-      return await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           name: data.name ?? null,
           email: data.email,
           password: hashedPassword,
         },
       });
+
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
+
+      await this.prisma.verificationToken.create({
+        data: { token, userId: user.id, expiresAt, type: 'EMAIL_VERIFICATION' },
+      });
+
+      await this.emailService.sendVerificationEmail(user.email, token);
+
+      return user;
     } catch (err: any) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2002') {
-          throw new BadRequestException('Email already exists');
-        }
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        throw new BadRequestException('Email already exists');
       }
       throw err;
     }
@@ -42,6 +59,7 @@ export class UsersService {
         email: true,
         name: true,
         createdAt: true,
+        emailVerified: true,
       },
     });
   }
