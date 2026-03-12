@@ -2,23 +2,26 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { apiGet } from "@/utils/api";
 
 type Props = { children: ReactNode };
 
 export default function AuthPageGuard({ children }: Props) {
-  const { token } = useAuth();
   const router = useRouter();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (token) {
-      router.replace("/profile");
-    } else {
-      const id = setTimeout(() => setReady(true), 0);
-      return () => clearTimeout(id);
-    }
-  }, [token, router]);
+    const checkSession = async () => {
+      try {
+        await apiGet("/users/me");
+        router.replace("/profile");
+      } catch {
+        setReady(true);
+      }
+    };
+
+    void checkSession();
+  }, [router]);
 
   if (!ready) return null;
 

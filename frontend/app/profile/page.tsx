@@ -14,6 +14,8 @@ import {
   apiUpdateUser,
   apiUpdateProfile,
   apiCreateProfile,
+  apiChangePassword,
+  apiDeleteAccount,
 } from "@/utils/api";
 
 type FieldErrors = {
@@ -22,7 +24,7 @@ type FieldErrors = {
 
 export default function ProfilePage() {
   const mounted = useMounted();
-  const { token, logout } = useAuth();
+  const { logout } = useAuth();
 
   const [profileData, setProfileData] = useState<CompleteProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -34,39 +36,29 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
-  useEffect(() => {
-    if (!token) return;
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await apiGetCompleteProfile(token);
+        const data = await apiGetCompleteProfile();
         setProfileData(data);
         setEditingUser({ name: data.name, email: data.email });
 
         if (data.profile) {
           setEditingProfile({ ...data.profile });
-        } else {
-          setEditingProfile({
-            targetRole: "",
-            experienceLevel: "",
-            yearsExperience: 0,
-            skills: [],
-            technologies: [],
-            githubUrl: "",
-            linkedinUrl: "",
-            portfolioUrl: "",
-            location: "",
-          });
         }
-      } catch (err: unknown) {
-        if (err instanceof Error) setErrorMessage(err.message);
+      } catch (err) {
+        setErrorMessage("Please login");
       } finally {
         setLoading(false);
       }
     };
 
     void fetchProfile();
-  }, [token]);
+  }, []);
 
   const sanitizeProfile = (profile: PartialUserProfile) => {
     const { id, userId, createdAt, updatedAt, ...rest } = profile;
@@ -101,7 +93,7 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    if (!token || !profileData) return;
+    if (!profileData) return;
 
     setErrorMessage("");
     setSuccessMessage("");
@@ -112,19 +104,15 @@ export default function ProfilePage() {
     }
 
     try {
-      const updatedUser = await apiUpdateUser(editingUser, token);
+      const updatedUser = await apiUpdateUser(editingUser);
 
       let updatedProfile: UserProfile | undefined;
       if (profileData.profile) {
         updatedProfile = await apiUpdateProfile(
           sanitizeProfile(editingProfile),
-          token,
         );
       } else {
-        updatedProfile = await apiCreateProfile(
-          editingProfile as UserProfile,
-          token,
-        );
+        updatedProfile = await apiCreateProfile(editingProfile as UserProfile);
       }
 
       setProfileData({ ...updatedUser, profile: updatedProfile });
@@ -146,8 +134,45 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
 
+  const handleChangePassword = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
+      setErrorMessage("Passwords do not match or are empty");
+      return;
+    }
+
+    try {
+      const res = await apiChangePassword({
+        currentPassword: oldPassword,
+        newPassword,
+      });
+
+      setSuccessMessage(res.message || "Password changed successfully!");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: unknown) {
+      if (err instanceof Error) setErrorMessage(err.message);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone.",
+    );
+    if (!confirm) return;
+
+    try {
+      await apiDeleteAccount();
+      logout();
+    } catch (err: unknown) {
+      if (err instanceof Error) setErrorMessage(err.message);
+    }
+  };
+
   if (!mounted) return null;
-  if (!token) return <p>Please login</p>;
   if (loading) return <p>Loading...</p>;
   if (!profileData) return <p>No profile data found</p>;
 
@@ -390,6 +415,42 @@ export default function ProfilePage() {
           {profile ? "Edit Profile" : "Create Profile"}
         </button>
       )}
+
+      <h2>Security</h2>
+      <div>
+        <label>Old Password:</label>
+        <input
+          type="password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>New Password:</label>
+        <input
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Confirm New Password:</label>
+        <input
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+      </div>
+      <button onClick={handleChangePassword}>Change Password</button>
+
+      <hr />
+
+      <button
+        style={{ color: "white", backgroundColor: "red" }}
+        onClick={handleDeleteAccount}
+      >
+        Delete Account
+      </button>
 
       <hr style={{ margin: "20px 0" }} />
       <button onClick={logout}>Logout</button>

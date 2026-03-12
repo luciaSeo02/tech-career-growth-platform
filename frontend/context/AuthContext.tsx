@@ -1,37 +1,25 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
 
 type AuthContextType = {
-  token: string | null;
-  login: (jwt: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  });
+  const logout = async () => {
+    await fetch("http://localhost:3001/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
 
-  const login = (token: string) => {
-    localStorage.setItem("token", token);
-    document.cookie = `token=${token}; path=/; max-age=3600; SameSite=Lax`;
-    setToken(token);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    document.cookie = "token=; path=/; max-age=0";
-    setToken(null);
+    window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ logout }}>{children}</AuthContext.Provider>
   );
 }
 

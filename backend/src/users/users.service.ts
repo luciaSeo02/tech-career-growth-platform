@@ -127,14 +127,18 @@ export class UsersService {
 
   async deleteUser(id: string) {
     try {
+      await this.prisma.userProfile.deleteMany({
+        where: { userId: id },
+      });
+
       await this.prisma.user.delete({ where: { id } });
+
       return { message: 'User deleted successfully' };
     } catch (err: any) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === 'P2025'
-      ) {
-        throw new NotFoundException('User not found');
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2025') {
+          throw new NotFoundException('User not found');
+        }
       }
       throw err;
     }

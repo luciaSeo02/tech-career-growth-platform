@@ -5,13 +5,9 @@ import { useSearchParams } from "next/navigation";
 import FormInput from "../../components/FormInput";
 import Button from "../../components/Button";
 import { apiPost } from "../../utils/api";
-import { useAuth } from "@/context/AuthContext";
 import AuthPageGuard from "@/components/AuthPageGuard";
 
-type LoginResponse = { access_token: string };
-
 function LoginPageContent() {
-  const { login } = useAuth();
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered");
 
@@ -26,12 +22,8 @@ function LoginPageContent() {
     setError("");
 
     try {
-      const data = await apiPost<
-        LoginResponse,
-        { email: string; password: string }
-      >("/auth/login", { email, password });
+      await apiPost("/auth/login", { email, password });
 
-      login(data.access_token);
       window.location.href = "/profile";
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
