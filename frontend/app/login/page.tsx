@@ -6,6 +6,7 @@ import FormInput from "../../components/FormInput";
 import Button from "../../components/Button";
 import { apiPost } from "../../utils/api";
 import AuthPageGuard from "@/components/AuthPageGuard";
+import Link from "next/link";
 
 function LoginPageContent() {
   const searchParams = useSearchParams();
@@ -62,6 +63,11 @@ function LoginPageContent() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button label="Login" type="submit" />
+
+        <p style={{ marginTop: 16, textAlign: "center" }}>
+          Don&apos;t have an account?{" "}
+          <Link href="/register">Create one here</Link>
+        </p>
       </form>
     </div>
   );

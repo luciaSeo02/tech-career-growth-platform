@@ -6,54 +6,155 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ExperienceLevel {
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 model User {
-  id        String      @id @default(uuid())
-  email     String      @unique
-  name      String?
-  password  String
-  createdAt DateTime    @default(now())
-
-  emailVerified Boolean     @default(false)
-
-  profile   UserProfile?
-
-  tokens    VerificationToken[]
+  id            String              @id @default(uuid())
+  email         String              @unique
+  name          String?
+  password      String
+  createdAt     DateTime            @default(now())
+  emailVerified Boolean             @default(false)
+  profile       UserProfile?
+  tokens        VerificationToken[]
+  jobApplications JobApplication[]
 }
 
 model UserProfile {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-
+  id              String          @id @default(uuid())
+  userId          String          @unique
   targetRole      String
-  experienceLevel String
+  experienceLevel ExperienceLevel
   yearsExperience Int?
-
-  skills          String[]
-  technologies    String[]
-
   githubUrl       String?
   linkedinUrl     String?
   portfolioUrl    String?
-
   location        String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  user            User            @relation(fields: [userId], references: [id])
+  skills          UserProfileSkill[]
+}
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Skill {
+  id         String         @id @default(uuid())
+  name       String         @unique
+  categoryId String?
+  category   SkillCategory? @relation(fields: [categoryId], references: [id])
+  profiles   UserProfileSkill[]
+  jobApplications JobApplicationSkill[]
+  createdAt  DateTime       @default(now())
+}
 
-  user            User     @relation(fields: [userId], references: [id])
+model SkillCategory {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  skills Skill[]
+}
+
+model UserProfileSkill {
+  id        String      @id @default(uuid())
+  profileId String
+  skillId   String
+  level     SkillLevel?
+  years     Int?
+  profile   UserProfile @relation(fields: [profileId], references: [id])
+  skill     Skill       @relation(fields: [skillId], references: [id])
+
+  @@unique([profileId, skillId])
 }
 
 model VerificationToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
+  id        String    @id @default(uuid())
+  token     String    @unique
   userId    String
   type      TokenType
   expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum TokenType {
   EMAIL_VERIFICATION
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  GHOSTED
+}
+
+enum CompanyType {
+  STARTUP
+  SCALEUP
+  CORPORATE
+  CONSULTORA
+  AGENCY
+  OTHER
+}
+
+enum WorkMode {
+  REMOTE
+  HYBRID
+  ONSITE
+}
+
+enum ApplicationSource {
+  LINKEDIN
+  INFOJOBS
+  INDEED
+  COMPANY_SITE
+  REFERRAL
+  OTHER
+}
+
+model JobApplication {
+  id          String            @id @default(uuid())
+  userId      String
+
+  company     String
+  role        String
+  url         String?
+  location    String?
+
+  status      ApplicationStatus @default(SAVED)
+  source      ApplicationSource @default(OTHER)
+  companyType CompanyType?
+  workMode    WorkMode?
+
+  salaryMin   Int?
+  salaryMax   Int?
+
+  notes       String?
+  appliedAt   DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user        User              @relation(fields: [userId], references: [id])
+  skills      JobApplicationSkill[]
+}
+
+model JobApplicationSkill {
+  id            String         @id @default(uuid())
+  applicationId String
+  skillId       String
+
+  application   JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  skill         Skill          @relation(fields: [skillId], references: [id])
+
+  @@unique([applicationId, skillId])
 }

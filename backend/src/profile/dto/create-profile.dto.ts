@@ -1,33 +1,39 @@
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsArray,
   IsOptional,
   IsInt,
   IsNotEmpty,
+  ValidateNested,
+  IsEnum,
 } from 'class-validator';
+import { ExperienceLevel, SkillLevel } from '@prisma/client';
+
+export class SkillDto {
+  @IsString()
+  skillId: string;
+
+  @IsOptional()
+  @IsEnum(SkillLevel)
+  level?: SkillLevel;
+
+  @IsOptional()
+  @IsInt()
+  years?: number;
+}
 
 export class CreateProfileDto {
   @IsString()
   @IsNotEmpty()
-  targetRole!: string;
+  targetRole: string;
 
-  @IsString()
-  @IsNotEmpty()
-  experienceLevel!: string;
+  @IsEnum(ExperienceLevel)
+  experienceLevel: ExperienceLevel;
 
   @IsOptional()
   @IsInt()
   yearsExperience?: number;
-
-  @IsArray()
-  @IsNotEmpty()
-  @IsString({ each: true })
-  skills!: string[];
-
-  @IsArray()
-  @IsNotEmpty()
-  @IsString({ each: true })
-  technologies!: string[];
 
   @IsOptional()
   @IsString()
@@ -44,4 +50,10 @@ export class CreateProfileDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SkillDto)
+  skills?: SkillDto[];
 }

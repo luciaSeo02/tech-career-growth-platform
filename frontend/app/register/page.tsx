@@ -6,6 +6,7 @@ import FormInput from "../../components/FormInput";
 import Button from "../../components/Button";
 import { apiPost } from "../../utils/api";
 import AuthPageGuard from "@/components/AuthPageGuard";
+import Link from "next/link";
 
 type RegisterResponse = {
   id: string;
@@ -65,6 +66,10 @@ function RegisterPageContent() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button label="Register" type="submit" />
+
+        <p style={{ marginTop: 16, textAlign: "center" }}>
+          Already have an account? <Link href="/login">Log in here</Link>
+        </p>
       </form>
     </div>
   );

@@ -127,6 +127,16 @@ export class UsersService {
 
   async deleteUser(id: string) {
     try {
+      const profile = await this.prisma.userProfile.findUnique({
+        where: { userId: id },
+      });
+
+      if (profile) {
+        await this.prisma.userProfileSkill.deleteMany({
+          where: { profileId: profile.id },
+        });
+      }
+
       await this.prisma.userProfile.deleteMany({
         where: { userId: id },
       });
