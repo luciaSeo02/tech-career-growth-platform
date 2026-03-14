@@ -8,6 +8,10 @@ import {
   UserProfileSkill,
   AddSkillPayload,
   UpdateSkillPayload,
+  JobApplicationStats,
+  JobApplication,
+  UpdateJobApplicationPayload,
+  CreateJobApplicationPayload,
 } from "@/types/user";
 
 const BASE_URL = "http://localhost:3001";
@@ -130,4 +134,43 @@ export async function apiRemoveProfileSkill(
   skillId: string,
 ): Promise<{ message: string }> {
   return apiDelete<{ message: string }>(`/profile/skills/${skillId}`);
+}
+
+export async function apiGetJobApplications(): Promise<JobApplication[]> {
+  return apiGet<JobApplication[]>("/job-applications");
+}
+
+export async function apiGetJobApplication(
+  id: string,
+): Promise<JobApplication> {
+  return apiGet<JobApplication>(`/job-applications/${id}`);
+}
+
+export async function apiCreateJobApplication(
+  body: CreateJobApplicationPayload,
+): Promise<JobApplication> {
+  return apiPost<JobApplication, CreateJobApplicationPayload>(
+    "/job-applications",
+    body,
+  );
+}
+
+export async function apiUpdateJobApplication(
+  id: string,
+  body: UpdateJobApplicationPayload,
+): Promise<JobApplication> {
+  return apiPatch<JobApplication, UpdateJobApplicationPayload>(
+    `/job-applications/${id}`,
+    body,
+  );
+}
+
+export async function apiDeleteJobApplication(
+  id: string,
+): Promise<{ message: string }> {
+  return apiDelete<{ message: string }>(`/job-applications/${id}`);
+}
+
+export async function apiGetJobApplicationStats(): Promise<JobApplicationStats> {
+  return apiGet<JobApplicationStats>("/job-applications/stats");
 }

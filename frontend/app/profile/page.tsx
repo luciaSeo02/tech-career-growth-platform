@@ -5,8 +5,9 @@ import { useProfileForm } from "./hooks/useProfileForm";
 import UserInfoForm from "./components/UserInfoForm";
 import ProfessionalProfileForm from "./components/ProfessionalProfileForm";
 import SecuritySection from "./components/SecuritySection";
+import PrivatePageGuard from "@/components/PrivatePageGuard";
 
-export default function ProfilePage() {
+function ProfileContent() {
   const mounted = useMounted();
   const {
     profileData,
@@ -91,5 +92,13 @@ export default function ProfilePage() {
       <hr style={{ margin: "20px 0" }} />
       <button onClick={logout}>Logout</button>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <PrivatePageGuard>
+      <ProfileContent />
+    </PrivatePageGuard>
   );
 }
