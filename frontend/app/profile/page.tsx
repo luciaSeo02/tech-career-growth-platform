@@ -88,9 +88,6 @@ function ProfileContent() {
           else setSuccessMessage(msg);
         }}
       />
-
-      <hr style={{ margin: "20px 0" }} />
-      <button onClick={logout}>Logout</button>
     </div>
   );
 }
