@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { SkillsModule } from './skills/skills.module';
 import { JobApplicationsModule } from './job-applications/job-applications.module';
+import { MarketInsightsModule } from './market-insights/market-insights.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JobApplicationsModule } from './job-applications/job-applications.modul
     ProfileModule,
     SkillsModule,
     JobApplicationsModule,
+    MarketInsightsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
