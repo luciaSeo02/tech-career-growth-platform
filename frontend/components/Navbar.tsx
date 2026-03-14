@@ -5,7 +5,10 @@ import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-const NAV_LINKS = [{ href: "/job-applications", label: "Job Tracker" }];
+const NAV_LINKS = [
+  { href: "/job-applications", label: "Job Tracker" },
+  { href: "/market-insights", label: "Market" },
+];
 
 const AUTH_ROUTES = [
   "/login",

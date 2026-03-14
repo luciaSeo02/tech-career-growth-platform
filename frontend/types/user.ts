@@ -138,3 +138,37 @@ export type JobApplicationStats = {
   bySource: Partial<Record<ApplicationSource, number>>;
   byCompanyType: Partial<Record<CompanyType, number>>;
 };
+
+export type SkillDemand = {
+  skill: string;
+  category: string;
+  count: number;
+  region: string;
+  period: string;
+};
+
+export type RoleDistribution = {
+  role: string;
+  count: number;
+};
+
+export type WorkModeDistribution = {
+  mode: string;
+  count: number;
+};
+
+export type MarketOverview = {
+  totalJobs: number;
+  topSkills: SkillDemand[];
+  byCategory: Record<string, { skill: string; count: number }[]>;
+  regions: string[];
+  avgSalary: { min: number; max: number };
+  roleDistribution: RoleDistribution[];
+  workModeDistribution: WorkModeDistribution[];
+};
+
+export type SkillGap = {
+  matched: SkillDemand[];
+  gap: SkillDemand[];
+  coveragePercent: number;
+};

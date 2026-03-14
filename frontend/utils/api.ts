@@ -12,6 +12,9 @@ import {
   JobApplication,
   UpdateJobApplicationPayload,
   CreateJobApplicationPayload,
+  SkillGap,
+  SkillDemand,
+  MarketOverview,
 } from "@/types/user";
 
 const BASE_URL = "http://localhost:3001";
@@ -173,4 +176,30 @@ export async function apiDeleteJobApplication(
 
 export async function apiGetJobApplicationStats(): Promise<JobApplicationStats> {
   return apiGet<JobApplicationStats>("/job-applications/stats");
+}
+
+export async function apiGetMarketOverview(
+  region?: string,
+): Promise<MarketOverview> {
+  const params = region ? `?region=${encodeURIComponent(region)}` : "";
+  return apiGet<MarketOverview>(`/market-insights${params}`);
+}
+
+export async function apiGetTopSkills(
+  region?: string,
+  limit?: number,
+): Promise<SkillDemand[]> {
+  const params = new URLSearchParams();
+  if (region) params.set("region", region);
+  if (limit) params.set("limit", limit.toString());
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return apiGet<SkillDemand[]>(`/market-insights/top-skills${query}`);
+}
+
+export async function apiGetMarketRegions(): Promise<string[]> {
+  return apiGet<string[]>("/market-insights/regions");
+}
+
+export async function apiGetSkillGap(): Promise<SkillGap | null> {
+  return apiGet<SkillGap | null>("/market-insights/skill-gap");
 }
