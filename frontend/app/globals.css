@@ -249,7 +249,7 @@ button:disabled {
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 40px 40px;
 }
 
 /* --- Section --- */
@@ -308,4 +308,88 @@ hr {
 
 .animate-in {
   animation: fadeIn 0.3s ease forwards;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .page {
+    padding: 24px 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Collapse all grids to single column */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats cards — 2 columns on tablet */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .page {
+    padding: 16px 16px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+
+  /* Stats cards — 2 columns on mobile */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Form actions — stack buttons */
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  /* Job application card — stack on mobile */
+  .job-card-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+}
+
+/* Navbar responsive */
+@media (max-width: 640px) {
+  .nav-desktop {
+    display: none !important;
+  }
+
+  .nav-hamburger {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .nav-mobile-menu {
+    display: none !important;
+  }
 }

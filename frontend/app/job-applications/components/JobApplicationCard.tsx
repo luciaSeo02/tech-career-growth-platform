@@ -23,7 +23,7 @@ export default function JobApplicationCard({ application, onDelete }: Props) {
 
   return (
     <div
-      className="card"
+      className="card job-card-inner"
       style={{
         display: "flex",
         justifyContent: "space-between",
@@ -145,6 +145,7 @@ export default function JobApplicationCard({ application, onDelete }: Props) {
       </div>
 
       <div
+        className="form-actions"
         style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}
       >
         {application.url && (

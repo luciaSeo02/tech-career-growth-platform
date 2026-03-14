@@ -70,38 +70,41 @@ export default function SkillSelector({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                padding: "8px 0",
+                flexWrap: "wrap",
+                gap: 8,
+                padding: "10px 0",
                 borderBottom: "1px solid var(--bg-border)",
               }}
             >
-              <span
-                style={{
-                  minWidth: 120,
-                  fontSize: "0.875rem",
-                  color: "var(--text-primary)",
-                  fontFamily: "var(--font-mono)",
-                }}
-              >
-                {ps.skill.name}
-              </span>
-              {ps.skill.category && (
+              <div style={{ minWidth: 140, flex: "1 1 140px" }}>
                 <span
                   style={{
-                    fontSize: "0.7rem",
-                    color: "var(--text-muted)",
-                    minWidth: 80,
+                    fontSize: "0.875rem",
+                    color: "var(--text-primary)",
+                    fontFamily: "var(--font-mono)",
                   }}
                 >
-                  {ps.skill.category.name}
+                  {ps.skill.name}
                 </span>
-              )}
+                {ps.skill.category && (
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-muted)",
+                      marginLeft: 6,
+                    }}
+                  >
+                    {ps.skill.category.name}
+                  </span>
+                )}
+              </div>
+
               <select
                 value={ps.level ?? "BEGINNER"}
                 onChange={(e) =>
                   onUpdateField(ps.skillId, "level", e.target.value)
                 }
-                style={{ width: 140 }}
+                style={{ flex: "1 1 120px", minWidth: 100, maxWidth: 160 }}
               >
                 {LEVELS.map((l) => (
                   <option key={l} value={l}>
@@ -109,11 +112,19 @@ export default function SkillSelector({
                   </option>
                 ))}
               </select>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  flex: "0 0 auto",
+                }}
+              >
                 <input
                   type="number"
                   min={0}
-                  style={{ width: 64 }}
+                  style={{ width: 56 }}
                   value={ps.years ?? 0}
                   onChange={(e) =>
                     onUpdateField(ps.skillId, "years", Number(e.target.value))
@@ -127,15 +138,29 @@ export default function SkillSelector({
               </div>
               <button
                 type="button"
-                data-variant="danger"
                 onClick={() => onRemove(ps.skillId)}
                 style={{
-                  padding: "4px 10px",
-                  fontSize: "0.75rem",
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-muted)",
+                  cursor: "pointer",
+                  padding: "4px 6px",
+                  fontSize: "1rem",
+                  lineHeight: 1,
+                  borderRadius: "var(--radius-sm)",
+                  flex: "0 0 auto",
                   marginLeft: "auto",
+                  transition: "color 0.15s ease",
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "var(--danger)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "var(--text-muted)";
+                }}
+                title="Remove skill"
               >
-                Remove
+                ✕
               </button>
             </div>
           ))}

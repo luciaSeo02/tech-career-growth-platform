@@ -15,6 +15,7 @@ type Props = { stats: JobApplicationStats };
 export default function StatsCards({ stats }: Props) {
   return (
     <div
+      className="stats-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",

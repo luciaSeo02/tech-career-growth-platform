@@ -5,7 +5,12 @@ export function proxy(req: NextRequest) {
   const token = req.cookies.get("token");
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/profile") && !token) {
+  const protectedRoutes = ["/profile", "/job-applications"];
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
+
+  if (isProtected && !token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
@@ -13,5 +18,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*"],
+  matcher: ["/profile/:path*", "/job-applications/:path*"],
 };
