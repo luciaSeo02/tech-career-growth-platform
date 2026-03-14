@@ -127,28 +127,11 @@ export class UsersService {
 
   async deleteUser(id: string) {
     try {
-      const profile = await this.prisma.userProfile.findUnique({
-        where: { userId: id },
-      });
-
-      if (profile) {
-        await this.prisma.userProfileSkill.deleteMany({
-          where: { profileId: profile.id },
-        });
-      }
-
-      await this.prisma.userProfile.deleteMany({
-        where: { userId: id },
-      });
-
       await this.prisma.user.delete({ where: { id } });
-
       return { message: 'User deleted successfully' };
     } catch (err: any) {
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === 'P2025') {
-          throw new NotFoundException('User not found');
-        }
+        if (err.code === 'P2025') throw new NotFoundException('User not found');
       }
       throw err;
     }
