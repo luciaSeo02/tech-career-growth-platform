@@ -1,29 +1,22 @@
 "use client";
 
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { apiGet } from "@/utils/api";
+import { useAuth } from "@/context/AuthContext";
 
 type Props = { children: ReactNode };
 
 export default function PrivatePageGuard({ children }: Props) {
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        await apiGet("/users/me");
-        setReady(true);
-      } catch {
-        router.replace("/login");
-      }
-    };
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
-    void checkSession();
-  }, [router]);
-
-  if (!ready) return null;
+  if (isLoading || !isAuthenticated) return null;
 
   return <>{children}</>;
 }

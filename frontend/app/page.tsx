@@ -1,21 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import Dashboard from "./dashboard/page";
+import LandingPage from "./landing/page";
 
 export default function Home() {
-  const [status, setStatus] = useState("loading...");
+  const { isAuthenticated, isLoading } = useAuth();
 
-  useEffect(() => {
-    fetch("http://localhost:3001/health")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus("error"));
-  }, []);
+  if (isLoading) return null;
 
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Backend status:</h1>
-      <p>{status}</p>
-    </div>
-  );
+  return isAuthenticated ? <Dashboard /> : <LandingPage />;
 }

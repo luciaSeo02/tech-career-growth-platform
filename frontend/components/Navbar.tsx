@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const NAV_LINKS = [
+  { href: "/", label: "Dashboard" },
   { href: "/profile", label: "Profile" },
   { href: "/job-applications", label: "Job Tracker" },
 ];
