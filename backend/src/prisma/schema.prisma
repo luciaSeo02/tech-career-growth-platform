@@ -21,6 +21,7 @@ enum SkillLevel {
 
 enum TokenType {
   EMAIL_VERIFICATION
+  PASSWORD_RESET
 }
 
 enum ApplicationStatus {

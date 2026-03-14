@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as crypto from 'crypto';
 import { EmailService } from '../email/email.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -169,5 +170,55 @@ export class UsersService {
     });
 
     return { message: 'Password updated successfully' };
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+
+    if (!user)
+      return { message: 'If that email exists, a reset link has been sent' };
+
+    await this.prisma.verificationToken.deleteMany({
+      where: { userId: user.id, type: 'PASSWORD_RESET' },
+    });
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+
+    await this.prisma.verificationToken.create({
+      data: { token, userId: user.id, expiresAt, type: 'PASSWORD_RESET' },
+    });
+
+    await this.emailService.sendPasswordResetEmail(user.email, token);
+
+    return { message: 'If that email exists, a reset link has been sent' };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const record = await this.prisma.verificationToken.findUnique({
+      where: { token: dto.token },
+    });
+
+    if (!record || record.type !== 'PASSWORD_RESET') {
+      throw new BadRequestException('Invalid or expired token');
+    }
+
+    if (record.expiresAt < new Date()) {
+      await this.prisma.verificationToken.delete({
+        where: { token: dto.token },
+      });
+      throw new BadRequestException('Token has expired');
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: record.userId },
+      data: { password: hashedPassword },
+    });
+
+    await this.prisma.verificationToken.delete({ where: { token: dto.token } });
+
+    return { message: 'Password reset successfully' };
   }
 }

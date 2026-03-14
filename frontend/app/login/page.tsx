@@ -18,6 +18,8 @@ function LoginPageContent() {
 
   const verified = searchParams.get("verified");
 
+  const reset = searchParams.get("reset");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -50,6 +52,12 @@ function LoginPageContent() {
         </p>
       )}
 
+      {reset === "true" && (
+        <p style={{ color: "green", marginBottom: 16 }}>
+          Password reset successfully! You can now log in.
+        </p>
+      )}
+
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Email"
@@ -63,6 +71,10 @@ function LoginPageContent() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button label="Login" type="submit" />
+
+        <p style={{ marginTop: 8, textAlign: "center" }}>
+          <Link href="/forgot-password">Forgot your password?</Link>
+        </p>
 
         <p style={{ marginTop: 16, textAlign: "center" }}>
           Don&apos;t have an account?{" "}
