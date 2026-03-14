@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { apiPost } from "@/utils/api";
 import AuthPageGuard from "@/components/AuthPageGuard";
 
@@ -37,45 +38,164 @@ function ResetPasswordContent() {
   };
 
   if (!token) {
-    return <p style={{ color: "red" }}>Invalid reset link.</p>;
+    return (
+      <div
+        style={{
+          minHeight: "calc(100vh - 56px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+        }}
+      >
+        <div
+          className="card"
+          style={{ padding: 28, textAlign: "center", maxWidth: 400 }}
+        >
+          <p style={{ color: "var(--danger)", marginBottom: 16 }}>
+            Invalid or missing reset link.
+          </p>
+          <Link
+            href="/forgot-password"
+            style={{ color: "var(--accent)", fontSize: "0.875rem" }}
+          >
+            Request a new one →
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto" }}>
-      <h1>Reset Password</h1>
+    <div
+      style={{
+        minHeight: "calc(100vh - 56px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
+    >
+      <div
+        style={{
+          position: "fixed",
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 500,
+          height: 300,
+          background:
+            "radial-gradient(ellipse, var(--accent-dim) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 400,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.8rem",
+              color: "var(--accent)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            career/platform
+          </span>
+          <h1 style={{ marginTop: 12, fontSize: "1.75rem" }}>New password</h1>
+          <p
+            style={{
+              marginTop: 8,
+              fontSize: "0.875rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            Choose a strong password for your account.
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>New Password</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-            minLength={6}
-            style={{ display: "block", width: "100%", marginTop: 4 }}
-          />
+        {error && (
+          <div
+            style={{
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--danger)",
+              borderRadius: "var(--radius-md)",
+              padding: "12px 16px",
+              marginBottom: 20,
+              fontSize: "0.875rem",
+              color: "var(--danger)",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <div className="card" style={{ padding: 28 }}>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="newPassword">New Password</label>
+              <input
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "0.75rem",
+                  marginTop: 4,
+                }}
+              >
+                Minimum 6 characters
+              </small>
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{ width: "100%", padding: "11px", marginTop: 4 }}
+            >
+              {loading ? "Resetting..." : "Reset password →"}
+            </button>
+          </form>
         </div>
-        <div style={{ marginTop: 12 }}>
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            style={{ display: "block", width: "100%", marginTop: 4 }}
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ marginTop: 16, width: "100%" }}
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: "0.875rem",
+            color: "var(--text-muted)",
+          }}
         >
-          {loading ? "Resetting..." : "Reset Password"}
-        </button>
-      </form>
+          <Link href="/login" style={{ color: "var(--accent)" }}>
+            ← Back to login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

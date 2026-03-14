@@ -25,11 +25,38 @@ function EditJobApplicationContent() {
   } = useJobApplicationForm(id);
 
   if (!mounted) return null;
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div
+        className="page"
+        style={{
+          color: "var(--text-muted)",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.875rem",
+        }}
+      >
+        loading...
+      </div>
+    );
 
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Edit Application</h1>
+    <div className="page animate-in">
+      <div style={{ marginBottom: 32 }}>
+        <button
+          onClick={() => router.push("/job-applications")}
+          style={{
+            fontSize: "0.8rem",
+            marginBottom: 20,
+            color: "var(--text-muted)",
+          }}
+        >
+          ← Back
+        </button>
+        <h1 style={{ marginBottom: 6 }}>Edit Application</h1>
+        <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
+          Update your application details
+        </p>
+      </div>
       <JobApplicationForm
         form={form}
         setForm={setForm}

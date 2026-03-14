@@ -31,38 +31,129 @@ function ForgotPasswordContent() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto" }}>
-      <h1>Forgot Password</h1>
-      <p style={{ color: "#6b7280" }}>
-        Enter your email and we&apos;ll send you a reset link.
-      </p>
+    <div
+      style={{
+        minHeight: "calc(100vh - 56px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
+    >
+      <div
+        style={{
+          position: "fixed",
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 500,
+          height: 300,
+          background:
+            "radial-gradient(ellipse, var(--accent-dim) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ display: "block", width: "100%", marginTop: 4 }}
-          />
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 400,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.8rem",
+              color: "var(--accent)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            career/platform
+          </span>
+          <h1 style={{ marginTop: 12, fontSize: "1.75rem" }}>Reset password</h1>
+          <p
+            style={{
+              marginTop: 8,
+              fontSize: "0.875rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            Enter your email and we&apos;ll send you a reset link.
+          </p>
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ marginTop: 16, width: "100%" }}
-        >
-          {loading ? "Sending..." : "Send reset link"}
-        </button>
-      </form>
 
-      <p style={{ marginTop: 16, textAlign: "center" }}>
-        <Link href="/login">Back to login</Link>
-      </p>
+        {message && (
+          <div
+            style={{
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--success)",
+              borderRadius: "var(--radius-md)",
+              padding: "12px 16px",
+              marginBottom: 20,
+              fontSize: "0.875rem",
+              color: "var(--success)",
+            }}
+          >
+            {message}
+          </div>
+        )}
+        {error && (
+          <div
+            style={{
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--danger)",
+              borderRadius: "var(--radius-md)",
+              padding: "12px 16px",
+              marginBottom: 20,
+              fontSize: "0.875rem",
+              color: "var(--danger)",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <div className="card" style={{ padding: 28 }}>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || !!message}
+              style={{ width: "100%", padding: "11px" }}
+            >
+              {loading ? "Sending..." : "Send reset link →"}
+            </button>
+          </form>
+        </div>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: "0.875rem",
+            color: "var(--text-muted)",
+          }}
+        >
+          <Link href="/login" style={{ color: "var(--accent)" }}>
+            ← Back to login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

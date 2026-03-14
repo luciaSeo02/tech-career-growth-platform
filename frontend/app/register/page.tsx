@@ -2,20 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import FormInput from "../../components/FormInput";
-import Button from "../../components/Button";
-import { apiPost } from "../../utils/api";
-import AuthPageGuard from "@/components/AuthPageGuard";
 import Link from "next/link";
-
-type RegisterResponse = {
-  id: string;
-  name: string | null;
-  email: string;
-  createdAt: string;
-};
-
-type RegisterApiResponse = RegisterResponse;
+import { apiPost } from "@/utils/api";
+import AuthPageGuard from "@/components/AuthPageGuard";
 
 function RegisterPageContent() {
   const router = useRouter();
@@ -24,53 +13,166 @@ function RegisterPageContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      await apiPost<
-        RegisterApiResponse,
-        { name: string; email: string; password: string }
-      >("/users/register", { name, email, password });
-
+      await apiPost("/auth/register", { name, email, password });
       router.push("/login?registered=true");
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
       else setError("Unknown error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto" }}>
-      <h1>Register</h1>
+    <div
+      style={{
+        minHeight: "calc(100vh - 56px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
+    >
+      <div
+        style={{
+          position: "fixed",
+          top: "20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 500,
+          height: 300,
+          background:
+            "radial-gradient(ellipse, var(--accent-dim) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-      {error && <p style={{ color: "red", marginBottom: 16 }}>{error}</p>}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 400,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.8rem",
+              color: "var(--accent)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            career/platform
+          </span>
+          <h1 style={{ marginTop: 12, fontSize: "1.75rem" }}>Create account</h1>
+          <p
+            style={{
+              marginTop: 8,
+              fontSize: "0.875rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            Start tracking your career growth
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <FormInput
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <FormInput
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button label="Register" type="submit" />
+        {error && (
+          <div
+            style={{
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--danger)",
+              borderRadius: "var(--radius-md)",
+              padding: "12px 16px",
+              marginBottom: 20,
+              fontSize: "0.875rem",
+              color: "var(--danger)",
+            }}
+          >
+            {error}
+          </div>
+        )}
 
-        <p style={{ marginTop: 16, textAlign: "center" }}>
-          Already have an account? <Link href="/login">Log in here</Link>
+        <div className="card" style={{ padding: 28 }}>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+              />
+              <small
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "0.75rem",
+                  marginTop: 4,
+                }}
+              >
+                Minimum 6 characters
+              </small>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{ width: "100%", padding: "11px", marginTop: 4 }}
+            >
+              {loading ? "Creating account..." : "Create account →"}
+            </button>
+          </form>
+        </div>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: "0.875rem",
+            color: "var(--text-muted)",
+          }}
+        >
+          Already have an account?{" "}
+          <Link href="/login" style={{ color: "var(--accent)" }}>
+            Log in here
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

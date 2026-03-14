@@ -6,6 +6,8 @@ import {
   Skill,
 } from "@/types/user";
 
+import { useState } from "react";
+
 const STATUSES: ApplicationStatus[] = [
   "SAVED",
   "APPLIED",
@@ -63,6 +65,28 @@ type Props = {
   toggleSkill: (skillId: string) => void;
 };
 
+const labelStyle = {
+  fontSize: "0.75rem",
+  fontWeight: 500,
+  color: "var(--text-muted)",
+  letterSpacing: "0.05em",
+  textTransform: "uppercase" as const,
+  marginBottom: 6,
+  display: "block",
+};
+
+const sectionTitle = {
+  fontSize: "0.7rem",
+  fontWeight: 600,
+  color: "var(--text-muted)",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase" as const,
+  marginBottom: 12,
+  marginTop: 24,
+  paddingBottom: 8,
+  borderBottom: "1px solid var(--bg-border)",
+};
+
 export default function JobApplicationForm({
   form,
   setForm,
@@ -75,53 +99,103 @@ export default function JobApplicationForm({
   onCancel,
   toggleSkill,
 }: Props) {
-  const inputStyle = (field: string) =>
-    fieldErrors[field] ? { borderColor: "red" } : {};
+  const [skillSearch, setSkillSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const skillsByCategory = availableSkills.reduce(
-    (acc, skill) => {
-      const cat = skill.category?.name ?? "Other";
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(skill);
-      return acc;
-    },
-    {} as Record<string, Skill[]>,
+  const selectedSkills = availableSkills.filter((s) =>
+    form.skillIds.includes(s.id),
+  );
+
+  const filteredSkills = availableSkills.filter(
+    (s) =>
+      !form.skillIds.includes(s.id) &&
+      s.name.toLowerCase().includes(skillSearch.toLowerCase()),
   );
 
   return (
-    <div style={{ maxWidth: 600 }}>
+    <div style={{ maxWidth: 680 }}>
       {errorMessage && (
-        <div style={{ color: "red", marginBottom: 16 }}>{errorMessage}</div>
+        <div
+          style={{
+            backgroundColor: "var(--bg-elevated)",
+            border: "1px solid var(--danger)",
+            borderRadius: "var(--radius-md)",
+            padding: "12px 16px",
+            marginBottom: 24,
+            fontSize: "0.875rem",
+            color: "var(--danger)",
+          }}
+        >
+          {errorMessage}
+        </div>
       )}
 
-      <div>
-        <label>Company *</label>
-        <input
-          type="text"
-          style={inputStyle("company")}
-          value={form.company}
-          onChange={(e) => setForm({ ...form, company: e.target.value })}
-        />
-        {fieldErrors.company && (
-          <small style={{ color: "red" }}> {fieldErrors.company}</small>
-        )}
-      </div>
-      <div>
-        <label>Role *</label>
-        <input
-          type="text"
-          style={inputStyle("role")}
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-        />
-        {fieldErrors.role && (
-          <small style={{ color: "red" }}> {fieldErrors.role}</small>
-        )}
+      <p style={sectionTitle}>Position</p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="form-group">
+          <label style={labelStyle}>
+            Company <span style={{ color: "var(--danger)" }}>*</span>
+          </label>
+          <input
+            type="text"
+            style={fieldErrors.company ? { borderColor: "var(--danger)" } : {}}
+            value={form.company}
+            onChange={(e) => setForm({ ...form, company: e.target.value })}
+            placeholder="Acme Corp"
+          />
+          {fieldErrors.company && (
+            <small
+              style={{
+                color: "var(--danger)",
+                fontSize: "0.75rem",
+                marginTop: 4,
+              }}
+            >
+              {fieldErrors.company}
+            </small>
+          )}
+        </div>
+        <div className="form-group">
+          <label style={labelStyle}>
+            Role <span style={{ color: "var(--danger)" }}>*</span>
+          </label>
+          <input
+            type="text"
+            style={fieldErrors.role ? { borderColor: "var(--danger)" } : {}}
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+            placeholder="Senior Frontend Engineer"
+          />
+          {fieldErrors.role && (
+            <small
+              style={{
+                color: "var(--danger)",
+                fontSize: "0.75rem",
+                marginTop: 4,
+              }}
+            >
+              {fieldErrors.role}
+            </small>
+          )}
+        </div>
       </div>
 
-      <div style={{ display: "flex", gap: 16 }}>
-        <div>
-          <label>Status</label>
+      <div className="form-group">
+        <label style={labelStyle}>Job URL</label>
+        <input
+          type="text"
+          value={form.url}
+          onChange={(e) => setForm({ ...form, url: e.target.value })}
+          placeholder="https://linkedin.com/jobs/..."
+        />
+      </div>
+
+      <p style={sectionTitle}>Tracking</p>
+      <div
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}
+      >
+        <div className="form-group">
+          <label style={labelStyle}>Status</label>
           <select
             value={form.status}
             onChange={(e) =>
@@ -135,8 +209,8 @@ export default function JobApplicationForm({
             ))}
           </select>
         </div>
-        <div>
-          <label>Source</label>
+        <div className="form-group">
+          <label style={labelStyle}>Source</label>
           <select
             value={form.source}
             onChange={(e) =>
@@ -145,32 +219,36 @@ export default function JobApplicationForm({
           >
             {SOURCES.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {s.replace(/_/g, " ")}
               </option>
             ))}
           </select>
         </div>
+        <div className="form-group">
+          <label style={labelStyle}>Applied at</label>
+          <input
+            type="date"
+            value={form.appliedAt}
+            onChange={(e) => setForm({ ...form, appliedAt: e.target.value })}
+          />
+        </div>
       </div>
 
-      <div>
-        <label>URL</label>
-        <input
-          type="text"
-          value={form.url}
-          onChange={(e) => setForm({ ...form, url: e.target.value })}
-        />
-      </div>
-      <div>
-        <label>Location</label>
-        <input
-          type="text"
-          value={form.location}
-          onChange={(e) => setForm({ ...form, location: e.target.value })}
-        />
-      </div>
-      <div style={{ display: "flex", gap: 16 }}>
-        <div>
-          <label>Company Type</label>
+      <p style={sectionTitle}>Details</p>
+      <div
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}
+      >
+        <div className="form-group">
+          <label style={labelStyle}>Location</label>
+          <input
+            type="text"
+            value={form.location}
+            onChange={(e) => setForm({ ...form, location: e.target.value })}
+            placeholder="Madrid, Spain"
+          />
+        </div>
+        <div className="form-group">
+          <label style={labelStyle}>Company Type</label>
           <select
             value={form.companyType}
             onChange={(e) =>
@@ -188,8 +266,8 @@ export default function JobApplicationForm({
             ))}
           </select>
         </div>
-        <div>
-          <label>Work Mode</label>
+        <div className="form-group">
+          <label style={labelStyle}>Work Mode</label>
           <select
             value={form.workMode}
             onChange={(e) =>
@@ -206,99 +284,184 @@ export default function JobApplicationForm({
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 16 }}>
-        <div>
-          <label>Salary Min (€)</label>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="form-group">
+          <label style={labelStyle}>Salary Min (€)</label>
           <input
             type="number"
             min={0}
             value={form.salaryMin}
             onChange={(e) => setForm({ ...form, salaryMin: e.target.value })}
+            placeholder="30000"
           />
         </div>
-        <div>
-          <label>Salary Max (€)</label>
+        <div className="form-group">
+          <label style={labelStyle}>Salary Max (€)</label>
           <input
             type="number"
             min={0}
             value={form.salaryMax}
             onChange={(e) => setForm({ ...form, salaryMax: e.target.value })}
+            placeholder="45000"
           />
         </div>
       </div>
 
-      <div>
-        <label>Applied At</label>
-        <input
-          type="date"
-          value={form.appliedAt}
-          onChange={(e) => setForm({ ...form, appliedAt: e.target.value })}
-        />
-      </div>
-
-      <div>
-        <label>Notes</label>
+      <div className="form-group">
+        <label style={labelStyle}>Notes</label>
         <textarea
           value={form.notes}
           rows={3}
-          style={{ width: "100%" }}
           onChange={(e) => setForm({ ...form, notes: e.target.value })}
+          placeholder="Recruiter contact, interview notes, next steps..."
         />
       </div>
 
-      <div style={{ marginTop: 16 }}>
-        <label>
-          <strong>Skills required in this offer</strong>
-        </label>
-        <div style={{ marginTop: 8 }}>
-          {Object.entries(skillsByCategory).map(([category, skills]) => (
-            <div key={category} style={{ marginBottom: 12 }}>
-              <small style={{ color: "#6b7280", fontWeight: "bold" }}>
-                {category}
-              </small>
-              <div
+      <p style={sectionTitle}>Required Skills</p>
+
+      {selectedSkills.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            marginBottom: 12,
+          }}
+        >
+          {selectedSkills.map((skill) => (
+            <span
+              key={skill.id}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                backgroundColor: "var(--accent-dim)",
+                border: "1px solid var(--accent)",
+                borderRadius: 999,
+                padding: "4px 12px",
+                fontSize: "0.8rem",
+                color: "var(--accent)",
+                fontFamily: "var(--font-mono)",
+              }}
+            >
+              {skill.name}
+              <button
+                type="button"
+                onClick={() => toggleSkill(skill.id)}
                 style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--accent)",
+                  cursor: "pointer",
+                  padding: 0,
+                  fontSize: "0.9rem",
+                  lineHeight: 1,
                   display: "flex",
-                  flexWrap: "wrap",
-                  gap: 6,
-                  marginTop: 4,
+                  alignItems: "center",
                 }}
               >
-                {skills.map((skill) => {
-                  const selected = form.skillIds.includes(skill.id);
-                  return (
-                    <button
-                      key={skill.id}
-                      type="button"
-                      onClick={() => toggleSkill(skill.id)}
-                      style={{
-                        padding: "4px 10px",
-                        borderRadius: 12,
-                        border: "1px solid",
-                        borderColor: selected ? "#3b82f6" : "#d1d5db",
-                        backgroundColor: selected ? "#eff6ff" : "white",
-                        color: selected ? "#3b82f6" : "#374151",
-                        cursor: "pointer",
-                        fontSize: 13,
-                      }}
-                    >
-                      {skill.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                ×
+              </button>
+            </span>
           ))}
         </div>
+      )}
+
+      <div style={{ position: "relative" }}>
+        <input
+          type="text"
+          placeholder="Search and add skills..."
+          value={skillSearch}
+          onChange={(e) => {
+            setSkillSearch(e.target.value);
+            setShowDropdown(true);
+          }}
+          onFocus={() => setShowDropdown(true)}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+        />
+        {showDropdown && skillSearch && filteredSkills.length > 0 && (
+          <ul
+            style={{
+              position: "absolute",
+              top: "calc(100% + 4px)",
+              left: 0,
+              right: 0,
+              backgroundColor: "var(--bg-elevated)",
+              border: "1px solid var(--bg-border)",
+              borderRadius: "var(--radius-md)",
+              listStyle: "none",
+              margin: 0,
+              padding: "4px 0",
+              maxHeight: 220,
+              overflowY: "auto",
+              zIndex: 20,
+              boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+            }}
+          >
+            {filteredSkills.slice(0, 10).map((skill) => (
+              <li
+                key={skill.id}
+                onMouseDown={() => {
+                  toggleSkill(skill.id);
+                  setSkillSearch("");
+                  setShowDropdown(false);
+                }}
+                style={{
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  color: "var(--text-primary)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLLIElement).style.background =
+                    "var(--bg-hover)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLLIElement).style.background =
+                    "transparent";
+                }}
+              >
+                <span>{skill.name}</span>
+                {skill.category && (
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-muted)",
+                      fontFamily: "var(--font-mono)",
+                    }}
+                  >
+                    {skill.category.name}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <div style={{ marginTop: 24, display: "flex", gap: 8 }}>
-        <button onClick={onSubmit} disabled={saving}>
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginTop: 32,
+          paddingTop: 24,
+          borderTop: "1px solid var(--bg-border)",
+        }}
+      >
+        <button
+          type="submit"
+          onClick={onSubmit}
+          disabled={saving}
+          style={{ padding: "10px 24px" }}
+        >
           {saving
             ? "Saving..."
             : isEditing
-              ? "Update Application"
-              : "Create Application"}
+              ? "Update application →"
+              : "Create application →"}
         </button>
         <button onClick={onCancel} disabled={saving}>
           Cancel

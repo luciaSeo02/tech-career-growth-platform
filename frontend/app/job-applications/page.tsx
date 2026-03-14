@@ -12,26 +12,59 @@ function JobApplicationsContent() {
     useJobApplications();
 
   if (!mounted) return null;
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div
+        className="page"
+        style={{
+          color: "var(--text-muted)",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.875rem",
+        }}
+      >
+        loading...
+      </div>
+    );
 
   return (
-    <div style={{ padding: 40 }}>
+    <div className="page animate-in">
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
+          alignItems: "flex-start",
+          marginBottom: 32,
+          flexWrap: "wrap",
+          gap: 16,
         }}
       >
-        <h1>Job Applications</h1>
+        <div>
+          <h1 style={{ marginBottom: 6 }}>Job Applications</h1>
+          <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
+            Track every opportunity in your pipeline
+          </p>
+        </div>
         <Link href="/job-applications/new">
-          <button>+ Add Application</button>
+          <button type="submit" style={{ padding: "9px 20px" }}>
+            + Add application
+          </button>
         </Link>
       </div>
 
       {errorMessage && (
-        <div style={{ color: "red", marginBottom: 16 }}>{errorMessage}</div>
+        <div
+          style={{
+            backgroundColor: "var(--bg-elevated)",
+            border: "1px solid var(--danger)",
+            borderRadius: "var(--radius-md)",
+            padding: "12px 16px",
+            marginBottom: 20,
+            fontSize: "0.875rem",
+            color: "var(--danger)",
+          }}
+        >
+          {errorMessage}
+        </div>
       )}
 
       <JobApplicationList

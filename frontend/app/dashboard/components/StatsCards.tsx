@@ -1,50 +1,80 @@
 import { JobApplicationStats, ApplicationStatus } from "@/types/user";
 
-const STATUS_LABELS: Partial<
+const STATUS_CONFIG: Partial<
   Record<ApplicationStatus, { label: string; color: string }>
 > = {
-  APPLIED: { label: "Applied", color: "#3b82f6" },
-  INTERVIEW: { label: "Interviews", color: "#f59e0b" },
-  OFFER: { label: "Offers", color: "#10b981" },
-  REJECTED: { label: "Rejected", color: "#ef4444" },
-  GHOSTED: { label: "Ghosted", color: "#9ca3af" },
+  APPLIED: { label: "Applied", color: "var(--status-applied)" },
+  INTERVIEW: { label: "Interviews", color: "var(--status-interview)" },
+  OFFER: { label: "Offers", color: "var(--status-offer)" },
+  REJECTED: { label: "Rejected", color: "var(--status-rejected)" },
+  GHOSTED: { label: "Ghosted", color: "var(--status-ghosted)" },
 };
 
 type Props = { stats: JobApplicationStats };
 
 export default function StatsCards({ stats }: Props) {
   return (
-    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-      <Card label="Total Applications" value={stats.total} color="#111" />
-      {Object.entries(STATUS_LABELS).map(([status, { label, color }]) => {
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+        gap: 12,
+        marginBottom: 32,
+      }}
+    >
+      <StatCard label="Total" value={stats.total} color="var(--accent)" mono />
+      {Object.entries(STATUS_CONFIG).map(([status, { label, color }]) => {
         const value = stats.byStatus[status as ApplicationStatus] ?? 0;
-        return <Card key={status} label={label} value={value} color={color} />;
+        return (
+          <StatCard key={status} label={label} value={value} color={color} />
+        );
       })}
     </div>
   );
 }
 
-function Card({
+function StatCard({
   label,
   value,
   color,
+  mono,
 }: {
   label: string;
   value: number;
   color: string;
+  mono?: boolean;
 }) {
   return (
     <div
+      className="card"
       style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 8,
-        padding: "16px 24px",
-        minWidth: 120,
-        textAlign: "center",
+        padding: "20px 24px",
+        borderLeft: `2px solid ${color}`,
+        borderRadius: "var(--radius-lg)",
       }}
     >
-      <div style={{ fontSize: 32, fontWeight: "bold", color }}>{value}</div>
-      <div style={{ fontSize: 13, color: "#6b7280", marginTop: 4 }}>
+      <div
+        style={{
+          fontSize: "2rem",
+          fontWeight: 600,
+          color,
+          fontFamily: mono ? "var(--font-mono)" : "var(--font-sans)",
+          letterSpacing: "-0.02em",
+          lineHeight: 1,
+        }}
+      >
+        {value}
+      </div>
+      <div
+        style={{
+          fontSize: "0.75rem",
+          color: "var(--text-muted)",
+          marginTop: 8,
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          fontWeight: 500,
+        }}
+      >
         {label}
       </div>
     </div>
