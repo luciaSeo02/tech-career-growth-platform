@@ -1,12 +1,16 @@
-import { Controller, Get, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards, Req } from '@nestjs/common';
 import { MarketInsightsService } from './market-insights.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthRequest } from '../auth/types/auth-request.type';
+import { AdzunaService } from 'src/adzuna/adzuna.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('market-insights')
 export class MarketInsightsController {
-  constructor(private readonly marketInsightsService: MarketInsightsService) {}
+  constructor(
+    private readonly marketInsightsService: MarketInsightsService,
+    private readonly adzunaService: AdzunaService,
+  ) {}
 
   @Get()
   getOverview(@Query('region') region?: string) {
@@ -37,5 +41,18 @@ export class MarketInsightsController {
   @Get('skill-gap')
   getSkillGap(@Req() req: AuthRequest) {
     return this.marketInsightsService.getSkillGap(req.user.sub);
+  }
+
+  @Post('sync')
+  async syncMarketData() {
+    const results = await this.adzunaService.syncAllRegions();
+    await this.adzunaService.updateSkillDemand();
+    return { message: 'Sync completed', results };
+  }
+
+  @Post('update-demand')
+  async updateDemand() {
+    await this.adzunaService.updateSkillDemand();
+    return { message: 'SkillDemand updated' };
   }
 }

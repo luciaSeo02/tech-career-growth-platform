@@ -46,6 +46,7 @@ enum WorkMode {
   REMOTE
   HYBRID
   ONSITE
+  NOT_SPECIFIED
 }
 
 enum ApplicationSource {
@@ -169,7 +170,8 @@ model JobMarket {
   sourceUrl   String?   @unique
   publishedAt DateTime?
   scrapedAt   DateTime  @default(now())
-
+  region    String?
+  roleCategory String?
   skills      JobMarketSkill[]
 }
 

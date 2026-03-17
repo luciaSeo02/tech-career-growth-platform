@@ -58,7 +58,9 @@ export class MarketInsightsService {
   async getMarketOverview(region?: string) {
     const where =
       region && region !== 'Global'
-        ? { location: { contains: region, mode: 'insensitive' as const } }
+        ? region === 'Remote'
+          ? { workMode: 'REMOTE' as const }
+          : { region }
         : {};
 
     const [totalJobs, topSkills, byCategory, regions] = await Promise.all([
@@ -74,10 +76,10 @@ export class MarketInsightsService {
     });
 
     const roleDistribution = await this.prisma.jobMarket.groupBy({
-      by: ['title'],
+      by: ['roleCategory'],
       where,
-      _count: { title: true },
-      orderBy: { _count: { title: 'desc' } },
+      _count: { roleCategory: true },
+      orderBy: { _count: { roleCategory: 'desc' } },
     });
 
     const workModeDistribution = await this.prisma.jobMarket.groupBy({
@@ -95,10 +97,12 @@ export class MarketInsightsService {
         min: Math.round(salaryData._avg.salaryMin ?? 0),
         max: Math.round(salaryData._avg.salaryMax ?? 0),
       },
-      roleDistribution: roleDistribution.map((r) => ({
-        role: r.title,
-        count: r._count.title,
-      })),
+      roleDistribution: roleDistribution
+        .filter((r) => r.roleCategory)
+        .map((r) => ({
+          role: r.roleCategory!,
+          count: r._count.roleCategory,
+        })),
       workModeDistribution: workModeDistribution.map((w) => ({
         mode: w.workMode,
         count: w._count.workMode,
@@ -115,11 +119,8 @@ export class MarketInsightsService {
     if (!profile) return null;
 
     const userSkillNames = new Set(profile.skills.map((s) => s.skill.name));
-
     const topDemanded = await this.getTopSkills('Global', 20);
-
     const gap = topDemanded.filter((s) => !userSkillNames.has(s.skill));
-
     const matched = topDemanded.filter((s) => userSkillNames.has(s.skill));
 
     return {

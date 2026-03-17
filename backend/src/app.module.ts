@@ -8,6 +8,7 @@ import { ProfileModule } from './profile/profile.module';
 import { SkillsModule } from './skills/skills.module';
 import { JobApplicationsModule } from './job-applications/job-applications.module';
 import { MarketInsightsModule } from './market-insights/market-insights.module';
+import { AdzunaModule } from './adzuna/adzuna.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MarketInsightsModule } from './market-insights/market-insights.module';
     SkillsModule,
     JobApplicationsModule,
     MarketInsightsModule,
+    AdzunaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
