@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Query, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from '@nestjs/common';
 import { MarketInsightsService } from './market-insights.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthRequest } from '../auth/types/auth-request.type';
@@ -44,7 +52,11 @@ export class MarketInsightsController {
   }
 
   @Post('sync')
-  async syncMarketData() {
+  async syncMarketData(@Req() req: AuthRequest) {
+    const adminKey = req.headers['x-admin-key'];
+    if (adminKey !== process.env.ADMIN_KEY) {
+      throw new ForbiddenException('Unauthorized');
+    }
     const results = await this.adzunaService.syncAllRegions();
     await this.adzunaService.updateSkillDemand();
     return { message: 'Sync completed', results };

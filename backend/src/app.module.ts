@@ -9,6 +9,8 @@ import { SkillsModule } from './skills/skills.module';
 import { JobApplicationsModule } from './job-applications/job-applications.module';
 import { MarketInsightsModule } from './market-insights/market-insights.module';
 import { AdzunaModule } from './adzuna/adzuna.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { AdzunaModule } from './adzuna/adzuna.module';
     JobApplicationsModule,
     MarketInsightsModule,
     AdzunaModule,
+    ScheduleModule.forRoot(),
+    SchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
