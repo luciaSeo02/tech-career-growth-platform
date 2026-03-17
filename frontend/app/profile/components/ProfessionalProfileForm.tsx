@@ -173,8 +173,19 @@ export default function ProfessionalProfileForm({
                 targetRole: e.target.value,
               })
             }
-            placeholder="Senior Frontend Engineer"
+            placeholder="e.g. Frontend Developer, Backend Engineer..."
           />
+          <small
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.75rem",
+              marginTop: 4,
+              display: "block",
+            }}
+          >
+            💡 Be specific for better skill gap analysis — e.g. &quot;Frontend
+            Developer&quot; instead of &quot;Developer&quot;
+          </small>
           {fieldErrors.targetRole && (
             <small style={{ color: "var(--danger)", fontSize: "0.75rem" }}>
               {fieldErrors.targetRole}

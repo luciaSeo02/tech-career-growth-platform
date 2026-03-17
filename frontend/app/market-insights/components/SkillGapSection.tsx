@@ -35,30 +35,82 @@ export default function SkillGapSection({ skillGap }: Props) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginBottom: 20,
+          marginBottom: 8,
           flexWrap: "wrap",
           gap: 12,
         }}
       >
-        <h3
-          style={{
-            fontSize: "0.875rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            color: "var(--text-muted)",
-            fontWeight: 500,
-            margin: 0,
-          }}
-        >
-          Your Skill Gap
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
+        <div>
+          <h3
+            style={{
+              fontSize: "0.875rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              color: "var(--text-muted)",
+              fontWeight: 500,
+              margin: 0,
+            }}
+          >
+            Your Skill Gap
+          </h3>
+          <div
+            style={{
+              marginTop: 6,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span
+              style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}
+            >
+              Target role:
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.8rem",
+                color: "var(--accent)",
+                backgroundColor: "var(--accent-dim)",
+                border: "1px solid var(--accent)",
+                borderRadius: 999,
+                padding: "2px 10px",
+              }}
+            >
+              {skillGap.targetRole}
+            </span>
+          </div>
+          {skillGap.roleCategory === "Other" && (
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--warning)",
+                marginTop: 8,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              💡 Add a more specific role to your profile for better results
+            </p>
+          )}
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-muted)",
+              marginTop: 4,
+            }}
+          >
+            Based on{" "}
+            <span
+              style={{ color: "var(--accent)", fontFamily: "var(--font-mono)" }}
+            >
+              {skillGap.totalAnalyzed}
+            </span>{" "}
+            {skillGap.roleCategory} job listings
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
               fontFamily: "var(--font-mono)",
@@ -74,13 +126,31 @@ export default function SkillGapSection({ skillGap }: Props) {
           >
             {skillGap.coveragePercent}%
           </div>
-          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-            market coverage
-          </span>
+          <div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+              market coverage
+            </div>
+            <div
+              style={{
+                fontSize: "0.7rem",
+                color: "var(--text-muted)",
+                fontFamily: "var(--font-mono)",
+              }}
+            >
+              for {skillGap.roleCategory}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          marginTop: 16,
+        }}
+      >
         <div>
           <div
             style={{

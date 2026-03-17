@@ -119,14 +119,108 @@ export class MarketInsightsService {
     if (!profile) return null;
 
     const userSkillNames = new Set(profile.skills.map((s) => s.skill.name));
-    const topDemanded = await this.getTopSkills('Global', 20);
+
+    const roleCategory = this.normalizeTargetRole(profile.targetRole);
+
+    const roleWhere = roleCategory !== 'Other' ? { roleCategory } : {};
+
+    const jobsForRole = await this.prisma.jobMarket.findMany({
+      where: roleWhere,
+      include: { skills: { include: { skill: true } } },
+      take: 500,
+    });
+
+    const skillCount: Record<string, number> = {};
+    for (const job of jobsForRole) {
+      for (const js of job.skills) {
+        const name = js.skill.name;
+        skillCount[name] = (skillCount[name] ?? 0) + 1;
+      }
+    }
+
+    const topRoleSkills = Object.entries(skillCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([skill, count]) => ({ skill, count, role: roleCategory }));
+
+    const topDemanded =
+      topRoleSkills.length > 0
+        ? topRoleSkills
+        : (await this.getTopSkills('Global', 10)).map((s) => ({
+            skill: s.skill,
+            count: s.count,
+            role: 'Global',
+          }));
+
     const gap = topDemanded.filter((s) => !userSkillNames.has(s.skill));
     const matched = topDemanded.filter((s) => userSkillNames.has(s.skill));
 
     return {
+      targetRole: profile.targetRole,
+      roleCategory,
       matched,
       gap,
       coveragePercent: Math.round((matched.length / topDemanded.length) * 100),
+      totalAnalyzed: jobsForRole.length,
     };
+  }
+
+  private normalizeTargetRole(targetRole: string): string {
+    const lower = targetRole.toLowerCase();
+    if (
+      lower.includes('frontend') ||
+      lower.includes('front-end') ||
+      lower.includes('front end') ||
+      lower.includes('react developer') ||
+      lower.includes('vue developer') ||
+      lower.includes('angular developer') ||
+      lower.includes('ui developer')
+    )
+      return 'Frontend Developer';
+    if (
+      lower.includes('backend') ||
+      lower.includes('back-end') ||
+      lower.includes('back end') ||
+      lower.includes('node developer') ||
+      lower.includes('python developer') ||
+      lower.includes('java developer') ||
+      lower.includes('api developer')
+    )
+      return 'Backend Developer';
+    if (
+      lower.includes('fullstack') ||
+      lower.includes('full stack') ||
+      lower.includes('full-stack') ||
+      lower.includes('software developer') ||
+      lower.includes('software engineer') ||
+      lower.includes('web developer') ||
+      lower.includes('application developer') ||
+      lower.includes('app developer')
+    )
+      return 'Full Stack Developer';
+    if (
+      lower.includes('devops') ||
+      lower.includes('sre') ||
+      lower.includes('platform engineer') ||
+      lower.includes('cloud engineer') ||
+      lower.includes('infrastructure')
+    )
+      return 'DevOps Engineer';
+    if (
+      lower.includes('data engineer') ||
+      lower.includes('data pipeline') ||
+      lower.includes('etl') ||
+      lower.includes('data developer')
+    )
+      return 'Data Engineer';
+    if (
+      lower.includes('mobile') ||
+      lower.includes('ios') ||
+      lower.includes('android') ||
+      lower.includes('flutter') ||
+      lower.includes('react native')
+    )
+      return 'Mobile Developer';
+    return 'Other';
   }
 }

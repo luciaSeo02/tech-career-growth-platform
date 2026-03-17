@@ -167,8 +167,17 @@ export type MarketOverview = {
   workModeDistribution: WorkModeDistribution[];
 };
 
+export type SkillGapItem = {
+  skill: string;
+  count: number;
+  role?: string;
+};
+
 export type SkillGap = {
-  matched: SkillDemand[];
-  gap: SkillDemand[];
+  targetRole: string;
+  roleCategory: string;
+  matched: SkillGapItem[];
+  gap: SkillGapItem[];
   coveragePercent: number;
+  totalAnalyzed: number;
 };
