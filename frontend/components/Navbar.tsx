@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 const NAV_LINKS = [
   { href: "/job-applications", label: "Job Tracker" },
   { href: "/market-insights", label: "Market" },
+  { href: "/recommendations", label: "Learn" },
 ];
 
 const AUTH_ROUTES = [

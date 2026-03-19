@@ -181,3 +181,26 @@ export type SkillGap = {
   coveragePercent: number;
   totalAnalyzed: number;
 };
+
+export type LearningResource = {
+  title: string;
+  url: string;
+  type: "docs" | "course" | "tutorial" | "roadmap";
+  free: boolean;
+};
+
+export type SkillRecommendation = {
+  skill: string;
+  category: string;
+  marketDemand: number;
+  priority: "high" | "medium" | "low";
+  resources: LearningResource[];
+};
+
+export type RecommendationsResult = {
+  targetRole: string;
+  roleCategory: string;
+  nextStep: SkillRecommendation | null;
+  recommendations: SkillRecommendation[];
+  totalAnalyzed: number;
+};

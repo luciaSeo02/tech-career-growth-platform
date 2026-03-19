@@ -8,5 +8,6 @@ import { AdzunaModule } from 'src/adzuna/adzuna.module';
   imports: [PrismaModule, AdzunaModule],
   controllers: [MarketInsightsController],
   providers: [MarketInsightsService],
+  exports: [MarketInsightsService],
 })
 export class MarketInsightsModule {}

@@ -11,6 +11,7 @@ import { MarketInsightsModule } from './market-insights/market-insights.module';
 import { AdzunaModule } from './adzuna/adzuna.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     AdzunaModule,
     ScheduleModule.forRoot(),
     SchedulerModule,
+    RecommendationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -15,6 +15,7 @@ import {
   SkillGap,
   SkillDemand,
   MarketOverview,
+  RecommendationsResult,
 } from "@/types/user";
 
 const BASE_URL = "http://localhost:3001";
@@ -202,4 +203,8 @@ export async function apiGetMarketRegions(): Promise<string[]> {
 
 export async function apiGetSkillGap(): Promise<SkillGap | null> {
   return apiGet<SkillGap | null>("/market-insights/skill-gap");
+}
+
+export async function apiGetRecommendations(): Promise<RecommendationsResult | null> {
+  return apiGet<RecommendationsResult | null>("/recommendations");
 }
