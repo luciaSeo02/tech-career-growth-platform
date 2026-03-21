@@ -21,7 +21,7 @@ function RegisterPageContent() {
     setLoading(true);
 
     try {
-      await apiPost("/auth/register", { name, email, password });
+      await apiPost("/users/register", { name, email, password });
       router.push("/login?registered=true");
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);

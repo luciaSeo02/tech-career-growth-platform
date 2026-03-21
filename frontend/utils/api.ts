@@ -29,7 +29,10 @@ async function handleResponse<T>(res: Response): Promise<T> {
       .catch(() => ({ message: "API Error" }));
     throw new Error(err.message || "API Error");
   }
-  return res.json() as Promise<T>;
+  const text = await res.text();
+  if (!text) return null as T;
+
+  return JSON.parse(text) as T;
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
