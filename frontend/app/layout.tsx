@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import { Geist_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 
+import type { Metadata } from "next";
+
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -14,6 +16,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 });
+
+export const metadata: Metadata = {
+  title: "Career Platform",
+  description:
+    "Accelerate your tech career. Track applications, identify skill gaps, and get personalized recommendations.",
+  keywords: ["career", "tech jobs", "skill gap", "job tracker", "developer"],
+};
 
 export default function RootLayout({
   children,
