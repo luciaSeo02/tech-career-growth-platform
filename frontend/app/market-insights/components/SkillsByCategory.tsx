@@ -71,9 +71,9 @@ export default function SkillsByCategory({ byCategory }: Props) {
                 <div
                   style={{ display: "flex", flexDirection: "column", gap: 4 }}
                 >
-                  {skills.slice(0, 5).map((s) => (
+                  {skills.slice(0, 5).map((s, i) => (
                     <div
-                      key={s.skill}
+                      key={`${category}-${s.skill}-${i}`}
                       style={{ display: "flex", alignItems: "center", gap: 8 }}
                     >
                       <span
