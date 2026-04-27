@@ -17,12 +17,13 @@ RUN npm ci --only=production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/prisma ./src/prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 RUN npx prisma generate
 
 EXPOSE 3001
 
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
 ```
 
 ## .dockerignore
