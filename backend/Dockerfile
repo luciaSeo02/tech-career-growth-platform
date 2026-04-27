@@ -24,12 +24,3 @@ RUN npx prisma generate
 EXPOSE 3001
 
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
-```
-
-## .dockerignore
-```
-node_modules
-dist
-.env
-*.log
-.git
