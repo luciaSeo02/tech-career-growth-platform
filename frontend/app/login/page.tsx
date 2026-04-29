@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { apiPost } from "@/utils/api";
@@ -217,8 +217,10 @@ function LoginPageContent() {
 
 export default function LoginPage() {
   return (
-    <AuthPageGuard>
-      <LoginPageContent />
-    </AuthPageGuard>
+    <Suspense fallback={null}>
+      <AuthPageGuard>
+        <LoginPageContent />
+      </AuthPageGuard>
+    </Suspense>
   );
 }

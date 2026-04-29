@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiPost } from "@/utils/api";
 import AuthPageGuard from "@/components/AuthPageGuard";
+import { Suspense } from "react";
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -202,8 +203,10 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <AuthPageGuard>
-      <ResetPasswordContent />
-    </AuthPageGuard>
+    <Suspense fallback={null}>
+      <AuthPageGuard>
+        <ResetPasswordContent />
+      </AuthPageGuard>
+    </Suspense>
   );
 }
