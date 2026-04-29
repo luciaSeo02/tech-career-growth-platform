@@ -18,7 +18,7 @@ import {
   RecommendationsResult,
 } from "@/types/user";
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 type ApiErrorResponse = { message: string };
 
