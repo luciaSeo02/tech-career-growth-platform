@@ -23,7 +23,9 @@ export default function AuthPageGuard({ children }: Props) {
     void checkSession();
   }, [router]);
 
-  if (!ready) return null;
+  if (!ready) {
+    return <div className="page">loading...</div>;
+  }
 
   return <>{children}</>;
 }
