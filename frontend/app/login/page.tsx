@@ -24,7 +24,10 @@ function LoginPageContent() {
 
     try {
       await apiPost("/auth/login", { email, password });
-      window.location.href = "/";
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 300);
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
       else setError("Unknown error");

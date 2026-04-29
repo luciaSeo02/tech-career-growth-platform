@@ -14,10 +14,12 @@ export class AuthController {
   ) {
     const { access_token } = await this.authService.login(loginDto);
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie('token', access_token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 1000 * 60 * 60,
     });
 
@@ -26,7 +28,13 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token');
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+    });
 
     return { message: 'Logged out' };
   }
