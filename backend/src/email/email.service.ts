@@ -1,54 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import * as brevo from '@getbrevo/brevo';
 
 @Injectable()
 export class EmailService {
-  private apiInstance: brevo.TransactionalEmailsApi;
+  private readonly apiKey = process.env.BREVO_API_KEY ?? '';
+  private readonly apiUrl = 'https://api.brevo.com/v3/smtp/email';
 
-  constructor() {
-    this.apiInstance = new brevo.TransactionalEmailsApi();
-    this.apiInstance.setApiKey(
-      brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY ?? '',
-    );
+  private async sendEmail(to: string, subject: string, htmlContent: string) {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        'api-key': this.apiKey,
+      },
+      body: JSON.stringify({
+        sender: {
+          name: 'Career Platform',
+          email: 'luciaseo20@gmail.com',
+        },
+        to: [{ email: to }],
+        subject,
+        htmlContent,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Brevo API error: ${JSON.stringify(error)}`);
+    }
+
+    return response.json();
   }
 
   async sendVerificationEmail(email: string, token: string) {
     const url = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
-
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
-    sendSmtpEmail.subject = 'Verify your email';
-    sendSmtpEmail.to = [{ email }];
-    sendSmtpEmail.sender = {
-      name: 'Career Platform',
-      email: 'no-reply@careerplatform.com',
-    };
-    sendSmtpEmail.htmlContent = `
-      <h2>Verify your email</h2>
-      <p>Click the link below to verify your account:</p>
-      <a href="${url}">${url}</a>
-    `;
-
-    await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+    await this.sendEmail(
+      email,
+      'Verify your email',
+      `<h2>Verify your email</h2>
+       <p>Click the link below to verify your account:</p>
+       <a href="${url}">${url}</a>`,
+    );
   }
 
   async sendPasswordResetEmail(email: string, token: string) {
     const url = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
-    sendSmtpEmail.subject = 'Reset your password';
-    sendSmtpEmail.to = [{ email }];
-    sendSmtpEmail.sender = {
-      name: 'Career Platform',
-      email: 'no-reply@careerplatform.com',
-    };
-    sendSmtpEmail.htmlContent = `
-      <h2>Reset your password</h2>
-      <p>Click the link below to reset your password. This link expires in 1 hour.</p>
-      <a href="${url}">${url}</a>
-      <p>If you didn't request this, you can safely ignore this email.</p>
-    `;
-
-    await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+    await this.sendEmail(
+      email,
+      'Reset your password',
+      `<h2>Reset your password</h2>
+       <p>Click the link below to reset your password. Expires in 1 hour.</p>
+       <a href="${url}">${url}</a>
+       <p>If you didn't request this, ignore this email.</p>`,
+    );
   }
 }
