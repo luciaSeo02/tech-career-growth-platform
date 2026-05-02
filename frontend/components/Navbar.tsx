@@ -92,7 +92,7 @@ export default function Navbar() {
             flexShrink: 0,
           }}
         >
-          trckr
+          my<span style={{ color: "var(--text-muted)" }}>/</span>trckr
         </Link>
 
         <div
