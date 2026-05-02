@@ -15,7 +15,7 @@ export default function Footer() {
           color: "var(--text-muted)",
         }}
       >
-        career/platform — built for tech candidates
+        trckr — built for tech candidates
       </span>
     </footer>
   );

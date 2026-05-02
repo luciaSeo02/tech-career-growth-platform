@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Career Platform",
+  title: "trckr",
   description:
     "Accelerate your tech career. Track applications, identify skill gaps, and get personalized recommendations.",
   keywords: ["career", "tech jobs", "skill gap", "job tracker", "developer"],

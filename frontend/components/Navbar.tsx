@@ -92,7 +92,7 @@ export default function Navbar() {
             flexShrink: 0,
           }}
         >
-          career<span style={{ color: "var(--text-muted)" }}>/</span>platform
+          trckr
         </Link>
 
         <div

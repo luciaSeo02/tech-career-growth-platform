@@ -15,7 +15,7 @@ export class EmailService {
       },
       body: JSON.stringify({
         sender: {
-          name: 'Career Platform',
+          name: 'trckr',
           email: 'luciaseo20@gmail.com',
         },
         to: [{ email: to }],
