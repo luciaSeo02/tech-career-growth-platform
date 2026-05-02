@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { apiChangePassword, apiDeleteAccount } from "@/utils/api";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const labelStyle = {
   fontSize: "0.75rem",
@@ -25,6 +26,8 @@ export default function SecuritySection({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
@@ -54,19 +57,6 @@ export default function SecuritySection({
     setNewPassword("");
     setConfirmPassword("");
     setShowPasswordForm(false);
-  };
-
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone.",
-    );
-    if (!confirmed) return;
-    try {
-      await apiDeleteAccount();
-      onAccountDeleted();
-    } catch (err: unknown) {
-      if (err instanceof Error) onMessage("error", err.message);
-    }
   };
 
   return (
@@ -209,13 +199,31 @@ export default function SecuritySection({
             Permanently delete your account and all associated data. This cannot
             be undone.
           </p>
-          <button
-            data-variant="danger"
-            onClick={handleDeleteAccount}
-            style={{ padding: "9px 20px", flexShrink: 0 }}
-          >
+          <button onClick={() => setShowDeleteAccount(true)}>
             Delete account
           </button>
+
+          <ConfirmModal
+            open={showDeleteAccount}
+            title="Delete account"
+            message="This will permanently delete your account and all your data. This action cannot be undone."
+            confirmLabel="Delete my account"
+            danger
+            loading={deleting}
+            onConfirm={async () => {
+              setDeleting(true);
+              try {
+                await apiDeleteAccount();
+                onAccountDeleted();
+              } catch (err: unknown) {
+                if (err instanceof Error) onMessage("error", err.message);
+              } finally {
+                setDeleting(false);
+                setShowDeleteAccount(false);
+              }
+            }}
+            onCancel={() => setShowDeleteAccount(false)}
+          />
         </div>
       </div>
     </div>

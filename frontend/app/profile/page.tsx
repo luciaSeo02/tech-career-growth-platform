@@ -6,6 +6,7 @@ import UserInfoForm from "./components/UserInfoForm";
 import ProfessionalProfileForm from "./components/ProfessionalProfileForm";
 import SecuritySection from "./components/SecuritySection";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
+import LoadingScreen from "@/components/LoadingScreen";
 
 function ProfilePageContent() {
   const mounted = useMounted();
@@ -32,19 +33,7 @@ function ProfilePageContent() {
   } = useProfileForm();
 
   if (!mounted) return null;
-  if (loading)
-    return (
-      <div
-        className="page"
-        style={{
-          color: "var(--text-muted)",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875rem",
-        }}
-      >
-        loading...
-      </div>
-    );
+  if (loading) return <LoadingScreen message="Loading profile..." />;
   if (!profileData)
     return (
       <div className="page" style={{ color: "var(--text-muted)" }}>

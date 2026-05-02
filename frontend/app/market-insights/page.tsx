@@ -10,6 +10,7 @@ import RoleDistributionChart from "./components/RoleDistributionChart";
 import WorkModeChart from "./components/WorkModeChart";
 import SkillGapSection from "./components/SkillGapSection";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
+import LoadingScreen from "@/components/LoadingScreen";
 
 function MarketInsightsContent() {
   const mounted = useMounted();
@@ -24,26 +25,22 @@ function MarketInsightsContent() {
   } = useMarketInsights();
 
   if (!mounted) return null;
-  if (loading)
-    return (
-      <div
-        className="page"
-        style={{
-          color: "var(--text-muted)",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875rem",
-        }}
-      >
-        loading...
-      </div>
-    );
+  if (loading) return <LoadingScreen message="Loading market data..." />;
 
   return (
     <div className="page animate-in">
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ marginBottom: 6 }}>Market Insights</h1>
         <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
-          Skill demand and trends across the European tech market
+          Skill demand and trends across the European tech market · powered by{" "}
+          <a
+            href="https://www.adzuna.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--accent)", textDecoration: "none" }}
+          >
+            Adzuna
+          </a>
         </p>
       </div>
 

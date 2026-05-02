@@ -1,4 +1,5 @@
 import { SkillGap } from "@/types/user";
+import { Lightbulb } from "lucide-react";
 import Link from "next/link";
 
 type Props = { skillGap: SkillGap | null };
@@ -91,7 +92,8 @@ export default function SkillGapSection({ skillGap }: Props) {
                 gap: 4,
               }}
             >
-              💡 Add a more specific role to your profile for better results
+              <Lightbulb size={13} style={{ flexShrink: 0 }} />
+              Add a more specific role to your profile for better results
             </p>
           )}
           <p

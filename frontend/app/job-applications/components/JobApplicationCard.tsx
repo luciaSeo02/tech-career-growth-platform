@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { JobApplication, ApplicationStatus } from "@/types/user";
+import { useState } from "react";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const STATUS_CONFIG: Record<
   ApplicationStatus,
@@ -20,6 +22,8 @@ type Props = {
 
 export default function JobApplicationCard({ application, onDelete }: Props) {
   const status = STATUS_CONFIG[application.status];
+
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <div
@@ -171,13 +175,20 @@ export default function JobApplicationCard({ application, onDelete }: Props) {
             Edit
           </button>
         </Link>
-        <button
-          data-variant="danger"
-          style={{ fontSize: "0.8rem", padding: "5px 12px" }}
-          onClick={() => onDelete(application.id)}
-        >
-          Delete
-        </button>
+        <button onClick={() => setShowConfirm(true)}>Delete</button>
+
+        <ConfirmModal
+          open={showConfirm}
+          title="Delete application"
+          message={`Are you sure you want to delete your application to ${application.company}? This can't be undone.`}
+          confirmLabel="Delete"
+          danger
+          onConfirm={() => {
+            onDelete(application.id);
+            setShowConfirm(false);
+          }}
+          onCancel={() => setShowConfirm(false)}
+        />
       </div>
     </div>
   );

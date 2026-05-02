@@ -5,6 +5,7 @@ import { useMounted } from "@/hooks/useMounted";
 import { useJobApplications } from "./hooks/useJobApplications";
 import JobApplicationList from "./components/JobApplicationList";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
+import LoadingScreen from "@/components/LoadingScreen";
 
 function JobApplicationsContent() {
   const mounted = useMounted();
@@ -12,19 +13,7 @@ function JobApplicationsContent() {
     useJobApplications();
 
   if (!mounted) return null;
-  if (loading)
-    return (
-      <div
-        className="page"
-        style={{
-          color: "var(--text-muted)",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875rem",
-        }}
-      >
-        loading...
-      </div>
-    );
+  if (loading) return <LoadingScreen message="Loading applications..." />;
 
   return (
     <div className="page animate-in">

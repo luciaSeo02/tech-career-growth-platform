@@ -15,10 +15,18 @@ function RegisterPageContent() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
     try {
       await apiPost("/users/register", { name, email, password });
@@ -147,6 +155,18 @@ function RegisterPageContent() {
               >
                 Minimum 6 characters
               </small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+              />
             </div>
 
             <button

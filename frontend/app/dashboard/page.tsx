@@ -19,6 +19,9 @@ import ApplicationsBySource from "./components/ApplicationsBySource";
 import ApplicationsByCompanyType from "./components/ApplicationsByCompanyType";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
 
+import { Zap, BarChart3, Plus } from "lucide-react";
+import LoadingScreen from "@/components/LoadingScreen";
+
 function DashboardContent() {
   const mounted = useMounted();
   const [stats, setStats] = useState<JobApplicationStats | null>(null);
@@ -46,19 +49,7 @@ function DashboardContent() {
   }, []);
 
   if (!mounted) return null;
-  if (loading)
-    return (
-      <div
-        className="page"
-        style={{
-          color: "var(--text-muted)",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875rem",
-        }}
-      >
-        loading...
-      </div>
-    );
+  if (loading) return <LoadingScreen message="Loading dashboard..." />;
 
   return (
     <div className="page animate-in">
@@ -80,8 +71,17 @@ function DashboardContent() {
           </p>
         </div>
         <Link href="/job-applications/new">
-          <button type="submit" style={{ padding: "9px 20px" }}>
-            + Add application
+          <button
+            type="button"
+            style={{
+              padding: "9px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <Plus size={16} />
+            Add application
           </button>
         </Link>
       </div>
@@ -112,9 +112,13 @@ function DashboardContent() {
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              ⚡ Next Step
+              <Zap size={14} />
+              <span>Next Step</span>
             </div>
             <div>
               <div
@@ -168,13 +172,17 @@ function DashboardContent() {
             <div
               style={{
                 fontSize: "0.75rem",
-                color: "var(--text-muted)",
+                color: "var(--accent)",
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              ⚡ Next Step
+              <Zap size={14} />
+              <span>Next Step</span>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
               Complete your profile to get personalized recommendations.
@@ -206,13 +214,17 @@ function DashboardContent() {
             <div
               style={{
                 fontSize: "0.75rem",
-                color: "var(--text-muted)",
+                color: "var(--danger)",
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              📊 Market Coverage
+              <BarChart3 size={14} />
+              <span>Market Coverage</span>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
               <div
@@ -292,13 +304,17 @@ function DashboardContent() {
             <div
               style={{
                 fontSize: "0.75rem",
-                color: "var(--text-muted)",
+                color: "var(--danger)",
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
                 fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              📊 Market Coverage
+              <BarChart3 size={14} />
+              <span>Market Coverage</span>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
               Add skills to your profile to see your market coverage.

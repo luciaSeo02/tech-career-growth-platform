@@ -6,6 +6,7 @@ import {
 } from "@/types/user";
 import { FieldErrors } from "../hooks/useProfileForm";
 import SkillSelector from "./SkillSelector";
+import { Lightbulb } from "lucide-react";
 
 const EXPERIENCE_LEVELS: ExperienceLevel[] = [
   "JUNIOR",
@@ -180,10 +181,13 @@ export default function ProfessionalProfileForm({
               color: "var(--text-muted)",
               fontSize: "0.75rem",
               marginTop: 4,
-              display: "block",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
-            💡 Be specific for better skill gap analysis — e.g. &quot;Frontend
+            <Lightbulb size={13} style={{ flexShrink: 0 }} />
+            Be specific for better skill gap analysis — e.g. &quot;Frontend
             Developer&quot; instead of &quot;Developer&quot;
           </small>
           {fieldErrors.targetRole && (

@@ -31,20 +31,11 @@ export function useJobApplications() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this application?",
-    );
-    if (!confirmed) return;
-
     try {
       await apiDeleteJobApplication(id);
-      setApplications((prev) => prev.filter((a) => a.id !== id));
-      setStats((prev) => {
-        if (!prev) return prev;
-        return { ...prev, total: prev.total - 1 };
-      });
-    } catch {
-      setErrorMessage("Failed to delete application");
+      setApplications((prev) => prev.filter((app) => app.id !== id));
+    } catch (err: unknown) {
+      if (err instanceof Error) setErrorMessage(err.message);
     }
   };
 
