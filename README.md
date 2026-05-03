@@ -116,33 +116,6 @@ npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000` and the API at `http://localhost:3001`.
-
-## Project Structure
-
-mytrckr/
-├── backend/ # NestJS API
-│ ├── src/
-│ │ ├── auth/ # JWT authentication
-│ │ ├── users/ # User management
-│ │ ├── profile/ # Professional profile
-│ │ ├── job-applications/
-│ │ ├── market-insights/ # Adzuna integration
-│ │ ├── recommendations/
-│ │ ├── email/ # Brevo integration
-│ │ └── prisma/
-│ └── prisma/ # Schema & migrations
-└── frontend/ # Next.js app
-├── app/
-│ ├── dashboard/
-│ ├── profile/
-│ ├── job-applications/
-│ ├── market-insights/
-│ ├── recommendations/
-│ ├── login/
-│ └── register/
-└── components/ # Shared components
-
 ## License
 
 MIT
