@@ -70,17 +70,17 @@ function LoginPageContent() {
         }}
       >
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <span
+          <Link
+            href="/"
             style={{
               fontFamily: "var(--font-mono)",
               fontSize: "0.8rem",
               color: "var(--accent)",
               letterSpacing: "0.1em",
-              textTransform: "uppercase",
             }}
           >
-            career/platform
-          </span>
+            my/trckr
+          </Link>
           <h1 style={{ marginTop: 12, fontSize: "1.75rem" }}>Welcome back</h1>
           <p
             style={{

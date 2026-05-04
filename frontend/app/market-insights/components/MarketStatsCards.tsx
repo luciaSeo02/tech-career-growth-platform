@@ -2,7 +2,15 @@ import { MarketOverview } from "@/types/user";
 
 type Props = { overview: MarketOverview; region: string };
 
+const getCurrency = (region: string) => {
+  const r = region.toLowerCase();
+  if (r.includes("uk") || r.includes("united kingdom") || r.includes("britain"))
+    return "£";
+  return "€";
+};
+
 export default function MarketStatsCards({ overview, region }: Props) {
+  const currency = getCurrency(region);
   return (
     <div
       style={{
@@ -20,13 +28,13 @@ export default function MarketStatsCards({ overview, region }: Props) {
       />
       <StatCard
         label="Avg Salary Min"
-        value={`€${overview.avgSalary.min.toLocaleString()}`}
+        value={`${currency}${overview.avgSalary.min.toLocaleString()}`}
         color="var(--success)"
         mono
       />
       <StatCard
         label="Avg Salary Max"
-        value={`€${overview.avgSalary.max.toLocaleString()}`}
+        value={`${currency}${overview.avgSalary.max.toLocaleString()}`}
         color="var(--success)"
         mono
       />

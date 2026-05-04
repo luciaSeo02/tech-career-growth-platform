@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiPost } from "../../utils/api";
+import { Target } from "lucide-react";
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -59,15 +60,11 @@ function VerifyEmailContent() {
       >
         {status === "loading" && (
           <>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "1.5rem",
-                color: "var(--accent)",
-                marginBottom: 16,
-              }}
-            >
-              ◎
+            <div>
+              <Target
+                size={40}
+                style={{ color: "var(--bg-border)", marginBottom: 16 }}
+              />
             </div>
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
               Verifying your email...

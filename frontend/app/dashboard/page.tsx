@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useMounted } from "@/hooks/useMounted";
 import {
   JobApplicationStats,
   RecommendationsResult,
@@ -19,11 +18,10 @@ import ApplicationsBySource from "./components/ApplicationsBySource";
 import ApplicationsByCompanyType from "./components/ApplicationsByCompanyType";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
 
-import { Zap, BarChart3, Plus } from "lucide-react";
+import { Zap, BarChart3, Plus, Target } from "lucide-react";
 import LoadingScreen from "@/components/LoadingScreen";
 
 function DashboardContent() {
-  const mounted = useMounted();
   const [stats, setStats] = useState<JobApplicationStats | null>(null);
   const [recommendations, setRecommendations] =
     useState<RecommendationsResult | null>(null);
@@ -48,12 +46,10 @@ function DashboardContent() {
     void fetchData();
   }, []);
 
-  if (!mounted) return null;
   if (loading) return <LoadingScreen message="Loading dashboard..." />;
 
   return (
     <div className="page animate-in">
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -337,15 +333,11 @@ function DashboardContent() {
             borderStyle: "dashed",
           }}
         >
-          <div
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "2rem",
-              color: "var(--bg-border)",
-              marginBottom: 16,
-            }}
-          >
-            ◎
+          <div>
+            <Target
+              size={40}
+              style={{ color: "var(--bg-border)", marginBottom: 16 }}
+            />
           </div>
           <h3 style={{ marginBottom: 8, color: "var(--text-secondary)" }}>
             No applications yet

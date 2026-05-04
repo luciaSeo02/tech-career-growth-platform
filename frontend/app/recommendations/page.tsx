@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useMounted } from "@/hooks/useMounted";
 import {
   RecommendationsResult,
   SkillRecommendation,
@@ -340,7 +339,6 @@ function RecommendationCard({
 }
 
 function RecommendationsContent() {
-  const mounted = useMounted();
   const [data, setData] = useState<RecommendationsResult | null>(null);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
@@ -353,7 +351,6 @@ function RecommendationsContent() {
     text: string;
   } | null>(null);
 
-  // Filters
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
@@ -408,7 +405,6 @@ function RecommendationsContent() {
     }
   };
 
-  if (!mounted) return null;
   if (loading) return <LoadingScreen message="Loading recommendations..." />;
 
   if (!data) {

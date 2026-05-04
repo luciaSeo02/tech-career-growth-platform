@@ -1,26 +1,27 @@
+import { BarChart3, ClipboardList, Compass, Target } from "lucide-react";
 import Link from "next/link";
 
 const FEATURES = [
   {
-    icon: "◈",
+    icon: <ClipboardList size={28} style={{ color: "var(--accent)" }} />,
     title: "Track applications",
     description:
       "Log every job you apply to. Track status, source, salary, and required skills in one place.",
   },
   {
-    icon: "◎",
+    icon: <Target size={28} style={{ color: "var(--accent)" }} />,
     title: "Identify skill gaps",
     description:
       "Compare your profile against market demand. Know exactly what to learn next.",
   },
   {
-    icon: "◉",
+    icon: <BarChart3 size={28} style={{ color: "var(--accent)" }} />,
     title: "Market insights",
     description:
       "See what technologies are growing in your region. Stay ahead of the curve.",
   },
   {
-    icon: "◐",
+    icon: <Compass size={28} style={{ color: "var(--accent)" }} />,
     title: "Career strategy",
     description:
       "Get a personalized weekly plan. Learn, build, and apply with direction.",

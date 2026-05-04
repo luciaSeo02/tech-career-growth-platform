@@ -2,11 +2,13 @@ import {
   ExperienceLevel,
   PartialUserProfile,
   Skill,
+  SkillLevel,
   UserProfile,
 } from "@/types/user";
 import { FieldErrors } from "../hooks/useProfileForm";
 import SkillSelector from "./SkillSelector";
 import { Lightbulb } from "lucide-react";
+import { capitalize } from "@/utils/format";
 
 const EXPERIENCE_LEVELS: ExperienceLevel[] = [
   "JUNIOR",
@@ -32,7 +34,7 @@ type Props = {
   setEditingProfile: (p: PartialUserProfile) => void;
   availableSkills: Skill[];
   fieldErrors: FieldErrors;
-  onAddSkill: (skill: Skill) => void;
+  onAddSkill: (skill: Skill, level: SkillLevel, years: number) => void;
   onRemoveSkill: (skillId: string) => void;
   onUpdateSkillField: (
     skillId: string,
@@ -71,7 +73,10 @@ export default function ProfessionalProfileForm({
           }}
         >
           <Field label="Target Role" value={profile.targetRole} />
-          <Field label="Experience Level" value={profile.experienceLevel} />
+          <Field
+            label="Experience Level"
+            value={capitalize(profile.experienceLevel)}
+          />
           <Field
             label="Years Experience"
             value={profile.yearsExperience?.toString() ?? "—"}
@@ -136,7 +141,7 @@ export default function ProfessionalProfileForm({
                     <span
                       style={{ color: "var(--text-muted)", fontSize: "0.7rem" }}
                     >
-                      · {s.level.toLowerCase()}
+                      · {capitalize(s.level)}
                     </span>
                   )}
                   {s.years !== undefined && s.years > 0 && (
@@ -161,7 +166,9 @@ export default function ProfessionalProfileForm({
         style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}
       >
         <div className="form-group">
-          <label style={labelStyle}>Target Role</label>
+          <label style={labelStyle}>
+            Target Role <span style={{ color: "var(--danger)" }}>*</span>{" "}
+          </label>
           <input
             type="text"
             style={
@@ -197,7 +204,10 @@ export default function ProfessionalProfileForm({
           )}
         </div>
         <div className="form-group">
-          <label style={labelStyle}>Experience Level</label>
+          <label style={labelStyle}>
+            Experience Level{" "}
+            <span style={{ color: "var(--danger)" }}>*</span>{" "}
+          </label>
           <select
             value={editingProfile.experienceLevel ?? "JUNIOR"}
             onChange={(e) =>
@@ -209,7 +219,7 @@ export default function ProfessionalProfileForm({
           >
             {EXPERIENCE_LEVELS.map((l) => (
               <option key={l} value={l}>
-                {l}
+                {capitalize(l)}
               </option>
             ))}
           </select>
@@ -220,7 +230,10 @@ export default function ProfessionalProfileForm({
           )}
         </div>
         <div className="form-group">
-          <label style={labelStyle}>Years Experience</label>
+          <label style={labelStyle}>
+            Years Experience{" "}
+            <span style={{ color: "var(--danger)" }}>*</span>{" "}
+          </label>
           <input
             type="number"
             min={0}
@@ -229,11 +242,12 @@ export default function ProfessionalProfileForm({
                 ? { borderColor: "var(--danger)" }
                 : {}
             }
-            value={editingProfile.yearsExperience ?? 0}
+            value={editingProfile.yearsExperience || ""}
             onChange={(e) =>
               setEditingProfile({
                 ...editingProfile,
-                yearsExperience: Number(e.target.value),
+                yearsExperience:
+                  e.target.value === "" ? 0 : Number(e.target.value),
               })
             }
           />
@@ -314,7 +328,7 @@ export default function ProfessionalProfileForm({
             marginBottom: 12,
           }}
         >
-          Skills
+          Skills <span style={{ color: "var(--danger)" }}>*</span>
         </div>
         {fieldErrors.skills && (
           <small

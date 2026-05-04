@@ -3,6 +3,7 @@
 import { useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { apiGet } from "@/utils/api";
+import LoadingScreen from "./LoadingScreen";
 
 type Props = { children: ReactNode };
 
@@ -24,7 +25,7 @@ export default function AuthPageGuard({ children }: Props) {
   }, [router]);
 
   if (!ready) {
-    return <div className="page">loading...</div>;
+    return <LoadingScreen />;
   }
 
   return <>{children}</>;

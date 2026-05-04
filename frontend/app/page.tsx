@@ -1,13 +1,23 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import Dashboard from "./dashboard/page";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import LandingPage from "./landing/page";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
-  if (isLoading) return null;
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
-  return isAuthenticated ? <Dashboard /> : <LandingPage />;
+  if (isLoading) return <LoadingScreen />;
+  if (isAuthenticated) return <LoadingScreen message="Redirecting..." />;
+
+  return <LandingPage />;
 }

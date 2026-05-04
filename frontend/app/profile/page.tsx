@@ -1,6 +1,5 @@
 "use client";
 
-import { useMounted } from "@/hooks/useMounted";
 import { useProfileForm } from "./hooks/useProfileForm";
 import UserInfoForm from "./components/UserInfoForm";
 import ProfessionalProfileForm from "./components/ProfessionalProfileForm";
@@ -9,7 +8,6 @@ import PrivatePageGuard from "@/components/PrivatePageGuard";
 import LoadingScreen from "@/components/LoadingScreen";
 
 function ProfilePageContent() {
-  const mounted = useMounted();
   const {
     profileData,
     loading,
@@ -32,7 +30,6 @@ function ProfilePageContent() {
     setSuccessMessage,
   } = useProfileForm();
 
-  if (!mounted) return null;
   if (loading) return <LoadingScreen message="Loading profile..." />;
   if (!profileData)
     return (

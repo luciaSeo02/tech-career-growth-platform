@@ -1,13 +1,12 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useMounted } from "@/hooks/useMounted";
 import { useJobApplicationForm } from "../hooks/useJobApplicationForm";
 import JobApplicationForm from "../components/JobApplicationForm";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
+import LoadingScreen from "@/components/LoadingScreen";
 
 function EditJobApplicationContent() {
-  const mounted = useMounted();
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
 
@@ -24,20 +23,7 @@ function EditJobApplicationContent() {
     toggleSkill,
   } = useJobApplicationForm(id);
 
-  if (!mounted) return null;
-  if (loading)
-    return (
-      <div
-        className="page"
-        style={{
-          color: "var(--text-muted)",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875rem",
-        }}
-      >
-        loading...
-      </div>
-    );
+  if (loading) return <LoadingScreen message="Loading..." />;
 
   return (
     <div className="page animate-in">

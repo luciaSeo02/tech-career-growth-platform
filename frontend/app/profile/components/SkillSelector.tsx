@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Skill, SkillLevel, UserProfileSkill } from "@/types/user";
+import { capitalize } from "@/utils/format";
 
 const LEVELS: SkillLevel[] = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
 
@@ -16,7 +17,7 @@ const labelStyle = {
 type Props = {
   selectedSkills: UserProfileSkill[];
   availableSkills: Skill[];
-  onAdd: (skill: Skill) => void;
+  onAdd: (skill: Skill, level: SkillLevel, years: number) => void;
   onRemove: (skillId: string) => void;
   onUpdateField: (
     skillId: string,
@@ -56,7 +57,7 @@ export default function SkillSelector({
 
   const handleConfirm = () => {
     if (!pendingSkill) return;
-    onAdd(pendingSkill.skill);
+    onAdd(pendingSkill.skill, pendingSkill.level, pendingSkill.years);
     setPendingSkill(null);
   };
 
@@ -108,7 +109,7 @@ export default function SkillSelector({
               >
                 {LEVELS.map((l) => (
                   <option key={l} value={l}>
-                    {l.toLowerCase()}
+                    {capitalize(l)}
                   </option>
                 ))}
               </select>
@@ -125,9 +126,13 @@ export default function SkillSelector({
                   type="number"
                   min={0}
                   style={{ width: 56 }}
-                  value={ps.years ?? 0}
+                  value={ps.years ?? ""}
                   onChange={(e) =>
-                    onUpdateField(ps.skillId, "years", Number(e.target.value))
+                    onUpdateField(
+                      ps.skillId,
+                      "years",
+                      e.target.value === "" ? 0 : Number(e.target.value),
+                    )
                   }
                 />
                 <span
@@ -213,7 +218,7 @@ export default function SkillSelector({
               >
                 {LEVELS.map((l) => (
                   <option key={l} value={l}>
-                    {l.toLowerCase()}
+                    {capitalize(l)}
                   </option>
                 ))}
               </select>
@@ -225,11 +230,11 @@ export default function SkillSelector({
                   type="number"
                   min={0}
                   style={{ width: 72 }}
-                  value={pendingSkill.years}
+                  value={pendingSkill.years || ""}
                   onChange={(e) =>
                     setPendingSkill({
                       ...pendingSkill,
-                      years: Number(e.target.value),
+                      years: e.target.value === "" ? 0 : Number(e.target.value),
                     })
                   }
                 />

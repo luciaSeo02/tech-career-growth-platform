@@ -1,6 +1,5 @@
 "use client";
 
-import { useMounted } from "@/hooks/useMounted";
 import { useMarketInsights } from "./hooks/useMarketInsights";
 import RegionSelector from "./components/RegionSelector";
 import MarketStatsCards from "./components/MarketStatsCards";
@@ -13,7 +12,6 @@ import PrivatePageGuard from "@/components/PrivatePageGuard";
 import LoadingScreen from "@/components/LoadingScreen";
 
 function MarketInsightsContent() {
-  const mounted = useMounted();
   const {
     overview,
     regions,
@@ -24,7 +22,6 @@ function MarketInsightsContent() {
     errorMessage,
   } = useMarketInsights();
 
-  if (!mounted) return null;
   if (loading) return <LoadingScreen message="Loading market data..." />;
 
   return (

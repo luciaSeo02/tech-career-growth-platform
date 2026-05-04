@@ -30,7 +30,7 @@ export default function RegionSelector({ regions, selected, onChange }: Props) {
               letterSpacing: "0.03em",
             }}
           >
-            {region}
+            {region === "Global" ? "All" : region}
           </button>
         );
       })}

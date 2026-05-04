@@ -38,7 +38,9 @@ export default function UserInfoForm({
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
       <div className="form-group">
-        <label style={labelStyle}>Name</label>
+        <label style={labelStyle}>
+          Name <span style={{ color: "var(--danger)" }}>*</span>
+        </label>
         <input
           type="text"
           style={fieldErrors.name ? { borderColor: "var(--danger)" } : {}}
@@ -61,7 +63,9 @@ export default function UserInfoForm({
         )}
       </div>
       <div className="form-group">
-        <label style={labelStyle}>Email</label>
+        <label style={labelStyle}>
+          Email <span style={{ color: "var(--danger)" }}>*</span>{" "}
+        </label>
         <input
           type="email"
           style={fieldErrors.email ? { borderColor: "var(--danger)" } : {}}

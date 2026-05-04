@@ -1,18 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMounted } from "@/hooks/useMounted";
 import { useJobApplications } from "./hooks/useJobApplications";
 import JobApplicationList from "./components/JobApplicationList";
 import PrivatePageGuard from "@/components/PrivatePageGuard";
 import LoadingScreen from "@/components/LoadingScreen";
 
 function JobApplicationsContent() {
-  const mounted = useMounted();
   const { applications, stats, loading, errorMessage, handleDelete } =
     useJobApplications();
 
-  if (!mounted) return null;
   if (loading) return <LoadingScreen message="Loading applications..." />;
 
   return (

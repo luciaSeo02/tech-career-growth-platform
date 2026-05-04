@@ -6,6 +6,7 @@ import {
   PartialUser,
   PartialUserProfile,
   Skill,
+  SkillLevel,
   UserProfileSkill,
 } from "@/types/user";
 import {
@@ -178,13 +179,17 @@ export function useProfileForm() {
     setIsEditing(false);
   };
 
-  const handleAddSkill = (skill: Skill) => {
+  const handleAddSkill = (
+    skill: Skill,
+    level: SkillLevel = "BEGINNER",
+    years: number = 0,
+  ) => {
     const newEntry: UserProfileSkill = {
       id: crypto.randomUUID(),
       profileId: profileData?.profile?.id ?? "",
       skillId: skill.id,
-      level: "BEGINNER",
-      years: 0,
+      level,
+      years,
       skill,
     };
     setEditingProfile((prev) => ({

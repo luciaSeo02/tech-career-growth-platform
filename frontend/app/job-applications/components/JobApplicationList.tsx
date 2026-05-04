@@ -5,6 +5,8 @@ import {
 } from "@/types/user";
 import JobApplicationCard from "./JobApplicationCard";
 import Link from "next/link";
+import { capitalize } from "@/utils/format";
+import { Target } from "lucide-react";
 
 const STATUS_ORDER: ApplicationStatus[] = [
   "INTERVIEW",
@@ -43,16 +45,10 @@ export default function JobApplicationList({
           borderStyle: "dashed",
         }}
       >
-        <div
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "2rem",
-            color: "var(--bg-border)",
-            marginBottom: 16,
-          }}
-        >
-          ◎
-        </div>
+        <Target
+          size={40}
+          style={{ color: "var(--bg-border)", marginBottom: 16 }}
+        />
         <h3 style={{ marginBottom: 8, color: "var(--text-secondary)" }}>
           No applications yet
         </h3>
@@ -107,7 +103,7 @@ export default function JobApplicationList({
                   padding: "4px 10px",
                 }}
               >
-                {status.toLowerCase()} · {count}
+                {capitalize(status)} · {count}
               </span>
             );
           })}

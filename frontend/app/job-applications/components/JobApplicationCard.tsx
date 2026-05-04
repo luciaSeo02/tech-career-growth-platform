@@ -2,6 +2,8 @@ import Link from "next/link";
 import { JobApplication, ApplicationStatus } from "@/types/user";
 import { useState } from "react";
 import ConfirmModal from "@/components/ConfirmModal";
+import { getCurrency, capitalize } from "@/utils/format";
+import { MapPin, ExternalLink } from "lucide-react";
 
 const STATUS_CONFIG: Record<
   ApplicationStatus,
@@ -99,22 +101,25 @@ export default function JobApplicationCard({ application, onDelete }: Props) {
             fontFamily: "var(--font-mono)",
           }}
         >
-          {application.location && <span>📍 {application.location}</span>}
-          {application.workMode && <span>{application.workMode}</span>}
-          {application.source && (
-            <span
-              style={{ textTransform: "uppercase", letterSpacing: "0.03em" }}
-            >
-              {application.source.replace(/_/g, " ")}
+          {application.location && (
+            <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+              <MapPin size={12} />
+              {application.location}
             </span>
+          )}
+          {application.workMode && (
+            <span>{capitalize(application.workMode)}</span>
+          )}
+          {application.source && (
+            <span>{capitalize(application.source.replace(/_/g, " "))}</span>
           )}
           {application.salaryMin && (
             <span>
+              {getCurrency(application.location)}
               {application.salaryMin.toLocaleString()}
               {application.salaryMax
-                ? `–${application.salaryMax.toLocaleString()}`
+                ? `–${getCurrency(application.location)}${application.salaryMax.toLocaleString()}`
                 : "+"}{" "}
-              €
             </span>
           )}
           {application.appliedAt && (
@@ -165,9 +170,11 @@ export default function JobApplicationCard({ application, onDelete }: Props) {
               borderRadius: "var(--radius-md)",
               fontFamily: "var(--font-mono)",
               textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            ↗
+            <ExternalLink size={14} />
           </a>
         )}
         <Link href={`/job-applications/${application.id}`}>
