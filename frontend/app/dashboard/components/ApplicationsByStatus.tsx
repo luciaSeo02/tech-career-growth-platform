@@ -16,7 +16,7 @@ const STATUS_COLORS: Record<ApplicationStatus, string> = {
   INTERVIEW: "#f59e0b",
   OFFER: "#10b981",
   REJECTED: "#ef4444",
-  GHOSTED: "#6b7280",
+  GHOSTED: "#8b5cf6",
 };
 
 type Props = { stats: JobApplicationStats };
