@@ -6,8 +6,15 @@ export class MarketInsightsService {
   constructor(private prisma: PrismaService) {}
 
   async getTopSkills(region?: string, limit = 10) {
-    const where =
-      region && region !== 'Global' ? { region } : { region: 'Global' };
+    const latestPeriod = await this.prisma.skillDemand.findFirst({
+      orderBy: { period: 'desc' },
+      select: { period: true },
+    });
+
+    const where: any = {
+      period: latestPeriod?.period,
+      region: region && region !== 'Global' ? region : 'Global',
+    };
 
     const demands = await this.prisma.skillDemand.findMany({
       where,
@@ -35,8 +42,15 @@ export class MarketInsightsService {
   }
 
   async getTopSkillsByCategory(region?: string) {
-    const where =
-      region && region !== 'Global' ? { region } : { region: 'Global' };
+    const latestPeriod = await this.prisma.skillDemand.findFirst({
+      orderBy: { period: 'desc' },
+      select: { period: true },
+    });
+
+    const where: any = {
+      period: latestPeriod?.period,
+      region: region && region !== 'Global' ? region : 'Global',
+    };
 
     const demands = await this.prisma.skillDemand.findMany({
       where,
