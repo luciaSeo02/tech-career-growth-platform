@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { JobApplicationStats } from "@/types/user";
+import { capitalize } from "@/utils/format";
 
 const COLORS = [
   "#6366f1",
@@ -16,7 +17,7 @@ export default function ApplicationsByCompanyType({ stats }: Props) {
   const data = Object.entries(stats.byCompanyType)
     .filter(([, count]) => (count ?? 0) > 0)
     .map(([type, count]) => ({
-      name: type.charAt(0) + type.slice(1).toLowerCase(),
+      name: capitalize(type),
       value: count ?? 0,
     }));
 

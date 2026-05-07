@@ -29,9 +29,9 @@ const FEATURES = [
 ];
 
 const STATS = [
-  { value: "10k+", label: "jobs analyzed" },
-  { value: "85%", label: "faster job search" },
-  { value: "3x", label: "more interviews" },
+  { value: "4k+", label: "jobs analyzed" },
+  { value: "50+", label: "skills tracked" },
+  { value: "100+", label: "learning resources" },
 ];
 
 export default function LandingPage() {

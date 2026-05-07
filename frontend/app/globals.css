@@ -141,6 +141,11 @@ textarea {
     box-shadow 0.15s ease;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
 input:focus,
 select:focus,
 textarea:focus {

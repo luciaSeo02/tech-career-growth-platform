@@ -1,14 +1,18 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { JobApplicationStats } from "@/types/user";
+import { capitalize } from "@/utils/format";
 
-const COLORS = [
-  "#00d4aa",
-  "#3b82f6",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#6b7280",
-];
+const SOURCE_COLORS: Record<string, string> = {
+  LINKEDIN: "#0077b5",
+  INDEED: "#2164f3",
+  INFOJOBS: "#ff6340",
+  GLASSDOOR: "#0caa41",
+  COMPANY_WEBSITE: "#8b5cf6",
+  REFERRAL: "#f59e0b",
+  RECRUITER: "#ec4899",
+  JOB_BOARD: "#14b8a6",
+  OTHER: "#6b7280",
+};
 
 type Props = { stats: JobApplicationStats };
 
@@ -16,7 +20,8 @@ export default function ApplicationsBySource({ stats }: Props) {
   const data = Object.entries(stats.bySource)
     .filter(([, count]) => (count ?? 0) > 0)
     .map(([source, count]) => ({
-      name: source.replace(/_/g, " "),
+      name: capitalize(source.replace(/_/g, " ")),
+      source,
       value: count ?? 0,
     }));
 
@@ -47,10 +52,10 @@ export default function ApplicationsBySource({ stats }: Props) {
             paddingAngle={3}
             dataKey="value"
           >
-            {data.map((_, index) => (
+            {data.map((entry) => (
               <Cell
-                key={index}
-                fill={COLORS[index % COLORS.length]}
+                key={entry.name}
+                fill={SOURCE_COLORS[entry.source] ?? "#6b7280"}
                 stroke="transparent"
               />
             ))}
@@ -67,7 +72,7 @@ export default function ApplicationsBySource({ stats }: Props) {
         </PieChart>
       </ResponsiveContainer>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
-        {data.map((entry, index) => (
+        {data.map((entry) => (
           <div
             key={entry.name}
             style={{ display: "flex", alignItems: "center", gap: 6 }}
@@ -77,7 +82,7 @@ export default function ApplicationsBySource({ stats }: Props) {
                 width: 8,
                 height: 8,
                 borderRadius: "50%",
-                backgroundColor: COLORS[index % COLORS.length],
+                backgroundColor: SOURCE_COLORS[entry.source] ?? "#6b7280",
                 flexShrink: 0,
               }}
             />
