@@ -71,10 +71,13 @@ export type ApplicationStatus =
 
 export type ApplicationSource =
   | "LINKEDIN"
-  | "INFOJOBS"
   | "INDEED"
-  | "COMPANY_SITE"
+  | "INFOJOBS"
+  | "GLASSDOOR"
+  | "COMPANY_WEBSITE"
   | "REFERRAL"
+  | "JOB_BOARD"
+  | "RECRUITER"
   | "OTHER";
 
 export type CompanyType =

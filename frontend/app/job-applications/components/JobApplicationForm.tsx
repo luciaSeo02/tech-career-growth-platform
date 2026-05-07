@@ -8,6 +8,8 @@ import {
 
 import { useState } from "react";
 
+import { capitalize } from "@/utils/format";
+
 const STATUSES: ApplicationStatus[] = [
   "SAVED",
   "APPLIED",
@@ -18,10 +20,13 @@ const STATUSES: ApplicationStatus[] = [
 ];
 const SOURCES: ApplicationSource[] = [
   "LINKEDIN",
-  "INFOJOBS",
   "INDEED",
-  "COMPANY_SITE",
+  "INFOJOBS",
+  "GLASSDOOR",
+  "COMPANY_WEBSITE",
   "REFERRAL",
+  "RECRUITER",
+  "JOB_BOARD",
   "OTHER",
 ];
 const COMPANY_TYPES: CompanyType[] = [
@@ -141,7 +146,7 @@ export default function JobApplicationForm({
             style={fieldErrors.company ? { borderColor: "var(--danger)" } : {}}
             value={form.company}
             onChange={(e) => setForm({ ...form, company: e.target.value })}
-            placeholder="Acme Corp"
+            placeholder="Google"
           />
           {fieldErrors.company && (
             <small
@@ -204,7 +209,7 @@ export default function JobApplicationForm({
           >
             {STATUSES.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {capitalize(s)}
               </option>
             ))}
           </select>
@@ -219,7 +224,7 @@ export default function JobApplicationForm({
           >
             {SOURCES.map((s) => (
               <option key={s} value={s}>
-                {s.replace(/_/g, " ")}
+                {capitalize(s.replace(/_/g, " "))}
               </option>
             ))}
           </select>
@@ -261,7 +266,7 @@ export default function JobApplicationForm({
             <option value="">— select —</option>
             {COMPANY_TYPES.map((t) => (
               <option key={t} value={t}>
-                {t}
+                {capitalize(t)}
               </option>
             ))}
           </select>
@@ -277,7 +282,7 @@ export default function JobApplicationForm({
             <option value="">— select —</option>
             {WORK_MODES.map((m) => (
               <option key={m} value={m}>
-                {m}
+                {capitalize(m)}
               </option>
             ))}
           </select>
@@ -286,7 +291,7 @@ export default function JobApplicationForm({
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         <div className="form-group">
-          <label style={labelStyle}>Salary Min (€)</label>
+          <label style={labelStyle}>Salary Min </label>
           <input
             type="number"
             min={0}
@@ -296,7 +301,7 @@ export default function JobApplicationForm({
           />
         </div>
         <div className="form-group">
-          <label style={labelStyle}>Salary Max (€)</label>
+          <label style={labelStyle}>Salary Max </label>
           <input
             type="number"
             min={0}
