@@ -10,6 +10,9 @@ import { useState } from "react";
 
 import { capitalize } from "@/utils/format";
 
+import { apiParseJobListing } from "@/utils/api";
+import { Wand2 } from "lucide-react";
+
 const STATUSES: ApplicationStatus[] = [
   "SAVED",
   "APPLIED",
@@ -107,6 +110,62 @@ export default function JobApplicationForm({
   const [skillSearch, setSkillSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const [parsing, setParsing] = useState(false);
+  const [aiMessage, setAiMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const handleAutofill = async () => {
+    if (!form.url) {
+      setAiMessage({ type: "error", text: "Paste a job URL first" });
+      setTimeout(() => setAiMessage(null), 3000);
+      return;
+    }
+
+    setParsing(true);
+    setAiMessage(null);
+
+    try {
+      const parsed = await apiParseJobListing(form.url);
+
+      const matchedSkillIds = parsed.skills
+        .map((name) =>
+          availableSkills.find(
+            (s) => s.name.toLowerCase() === name.toLowerCase(),
+          ),
+        )
+        .filter(Boolean)
+        .map((s) => s!.id);
+
+      setForm({
+        ...form,
+        company: parsed.company || form.company,
+        role: parsed.role || form.role,
+        location: parsed.location || form.location,
+        workMode: parsed.workMode || form.workMode,
+        companyType: parsed.companyType || form.companyType,
+        salaryMin: parsed.salaryMin?.toString() || form.salaryMin,
+        salaryMax: parsed.salaryMax?.toString() || form.salaryMax,
+        source: parsed.source || form.source,
+        skillIds: matchedSkillIds.length > 0 ? matchedSkillIds : form.skillIds,
+      });
+
+      setAiMessage({
+        type: "success",
+        text: "Fields auto-filled! Review and edit before saving.",
+      });
+    } catch {
+      setAiMessage({
+        type: "error",
+        text: "Could not parse this URL. Try filling manually.",
+      });
+    } finally {
+      setParsing(false);
+      setTimeout(() => setAiMessage(null), 5000);
+    }
+  };
+
   const selectedSkills = availableSkills.filter((s) =>
     form.skillIds.includes(s.id),
   );
@@ -194,6 +253,58 @@ export default function JobApplicationForm({
           placeholder="https://linkedin.com/jobs/..."
         />
       </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 8,
+        }}
+      >
+        <button
+          type="button"
+          onClick={handleAutofill}
+          disabled={parsing || !form.url}
+          style={{
+            padding: "7px 16px",
+            fontSize: "0.8rem",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            opacity: !form.url ? 0.4 : 1,
+          }}
+        >
+          <Wand2 size={14} />
+          {parsing ? "Parsing..." : "Auto-fill with AI"}
+        </button>
+        <span
+          style={{
+            fontSize: "0.7rem",
+            color: "var(--text-muted)",
+            fontFamily: "var(--font-mono)",
+          }}
+        >
+          AI may be inaccurate — always review before saving
+        </span>
+      </div>
+
+      {aiMessage && (
+        <div
+          style={{
+            backgroundColor: "var(--bg-elevated)",
+            border: `1px solid ${aiMessage.type === "success" ? "var(--success)" : "var(--danger)"}`,
+            borderRadius: "var(--radius-md)",
+            padding: "10px 14px",
+            marginBottom: 16,
+            fontSize: "0.8rem",
+            color:
+              aiMessage.type === "success" ? "var(--success)" : "var(--danger)",
+          }}
+        >
+          {aiMessage.text}
+        </div>
+      )}
 
       <p style={sectionTitle}>Tracking</p>
       <div

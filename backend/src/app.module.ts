@@ -12,6 +12,7 @@ import { AdzunaModule } from './adzuna/adzuna.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RecommendationsModule } from './recommendations/recommendations.module'
     ScheduleModule.forRoot(),
     SchedulerModule,
     RecommendationsModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

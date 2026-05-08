@@ -16,6 +16,9 @@ import {
   SkillDemand,
   MarketOverview,
   RecommendationsResult,
+  WorkMode,
+  CompanyType,
+  ApplicationSource,
 } from "@/types/user";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -210,4 +213,20 @@ export async function apiGetSkillGap(): Promise<SkillGap | null> {
 
 export async function apiGetRecommendations(): Promise<RecommendationsResult | null> {
   return apiGet<RecommendationsResult | null>("/recommendations");
+}
+
+export type ParsedJob = {
+  company: string;
+  role: string;
+  location: string | null;
+  workMode: WorkMode | null;
+  companyType: CompanyType | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  skills: string[];
+  source: ApplicationSource;
+};
+
+export async function apiParseJobListing(url: string): Promise<ParsedJob> {
+  return apiPost<ParsedJob, { url: string }>("/ai/parse-job", { url });
 }
