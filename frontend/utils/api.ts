@@ -230,3 +230,25 @@ export type ParsedJob = {
 export async function apiParseJobListing(url: string): Promise<ParsedJob> {
   return apiPost<ParsedJob, { url: string }>("/ai/parse-job", { url });
 }
+
+export type CvAnalysis = {
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+  skillsDetected: string[];
+  skillGaps: string[];
+  summary: string;
+};
+
+export async function apiAnalyzeCv(file: File): Promise<CvAnalysis> {
+  const formData = new FormData();
+  formData.append("cv", file);
+
+  const res = await fetch(`${BASE_URL}/ai/analyze-cv`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+  return handleResponse<CvAnalysis>(res);
+}

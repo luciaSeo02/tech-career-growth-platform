@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/job-applications", label: "Job Tracker" },
   { href: "/market-insights", label: "Market" },
   { href: "/recommendations", label: "Learn" },
+  { href: "/cv-analyzer", label: "CV Analyzer" },
 ];
 
 const AUTH_ROUTES = [

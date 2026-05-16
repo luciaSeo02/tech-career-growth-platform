@@ -26,6 +26,16 @@ export interface ParsedJobListing {
     | 'OTHER';
 }
 
+export interface CvAnalysis {
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+  skillsDetected: string[];
+  skillGaps: string[];
+  summary: string;
+}
+
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
@@ -142,5 +152,80 @@ ${textContent}`;
       this.logger.error(`Failed to parse AI response: ${result}`);
       throw new Error('Could not parse the job listing');
     }
+  }
+
+  async analyzeCv(
+    cvText: string,
+    targetRole: string,
+    userSkills: string[],
+    experienceLevel: string,
+    yearsExperience: number,
+  ): Promise<CvAnalysis> {
+    const levelContext = this.getLevelContext(experienceLevel, yearsExperience);
+
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+    });
+
+    const prompt = `You are a senior tech recruiter analyzing a CV for a ${experienceLevel} candidate targeting: "${targetRole}".
+
+    Today's date is ${currentDate}. Any dates in the CV up to this date are valid and not "future dates".
+
+
+${levelContext}
+
+Their current skills are: ${userSkills.join(', ') || 'none specified'}.
+
+IMPORTANT: Calibrate your feedback to their experience level. Don't penalize junior candidates for lack of professional experience — that's expected. Focus on what's actionable for someone at their level.
+
+Analyze the CV below and respond ONLY with a valid JSON object, no markdown, no backticks, no explanation:
+
+{
+  "overallScore": number from 0 to 100 (judge against expectations for ${experienceLevel} level, not senior),
+  "strengths": ["strength1", "strength2", ...] (3-5 specific strengths relevant for ${experienceLevel}),
+  "weaknesses": ["weakness1", "weakness2", ...] (2-4 areas to improve, NOT including 'lack of experience' if junior),
+  "suggestions": ["suggestion1", "suggestion2", ...] (3-5 actionable improvements appropriate for ${experienceLevel}),
+  "skillsDetected": ["skill1", "skill2", ...] (technical skills found in the CV),
+  "skillGaps": ["skill1", "skill2", ...] (important skills for ${targetRole} at ${experienceLevel} level that are missing),
+  "summary": "2-3 sentence professional summary of the candidate's fit for ${targetRole} at ${experienceLevel} level"
+}
+
+CV content:
+${cvText}`;
+
+    const result = await this.generate(prompt);
+
+    try {
+      const cleaned = result.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(cleaned) as CvAnalysis;
+
+      return {
+        overallScore:
+          typeof parsed.overallScore === 'number' ? parsed.overallScore : 0,
+        strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+        weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : [],
+        suggestions: Array.isArray(parsed.suggestions)
+          ? parsed.suggestions
+          : [],
+        skillsDetected: Array.isArray(parsed.skillsDetected)
+          ? parsed.skillsDetected
+          : [],
+        skillGaps: Array.isArray(parsed.skillGaps) ? parsed.skillGaps : [],
+        summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+      };
+    } catch {
+      this.logger.error(`Failed to parse CV analysis: ${result}`);
+      throw new Error('Could not analyze the CV');
+    }
+  }
+  private getLevelContext(level: string, years: number): string {
+    const contexts: Record<string, string> = {
+      JUNIOR: `This is an entry-level/junior candidate with ${years} years of professional experience. Focus feedback on portfolio quality, project diversity, fundamentals, and learning trajectory. Personal projects, bootcamp work, and contributions count as valid experience.`,
+      MID: `This is a mid-level candidate with ${years} years of experience. Expect solid project ownership, some leadership exposure, and technical depth.`,
+      SENIOR: `This is a senior candidate with ${years} years of experience. Expect technical leadership, architecture decisions, mentoring, and significant project impact.`,
+      LEAD: `This is a lead-level candidate with ${years} years of experience. Expect strategic thinking, team management, technical vision, and business impact.`,
+    };
+    return contexts[level] || contexts.MID;
   }
 }
